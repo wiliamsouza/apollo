@@ -1,4 +1,4 @@
-package api_test
+package api
 
 import (
 	"testing"
@@ -6,32 +6,35 @@ import (
 	"net/http/httptest"
 )
 
-func TestListPackage(t *testing.T) {
+func TestPackageList(t *testing.T) {
 	request, _ := http.NewRequest("GET", "test/package", nil)
 	response := httptest.NewRecorder()
 
-	listPackage(response, request)
+	packageList(response, request)
 	if response.Code != http.StatusOK {
-		t.Fatalf("Response code expected 200 got %v:\n", response.Code)
+		t.Fatalf("Response code expected %v got %v:\n",
+		http.StatusOK, response.Code)
 	}
 }
 
-func TestUploadPackage(t *testing.T) {
+func TestPackageUpload(t *testing.T) {
 	request, _ := http.NewRequest("POST", "test/package", nil)
 	response := httptest.NewRecorder()
 
-	uploadPackage(response, request)
-	if response.Code != http.StatusOK {
-		t.Fatalf("Response code expected 200 got %v:\n", response.Code)
+	packageUpload(response, request)
+	if response.Code != http.StatusCreated {
+		t.Fatalf("Response code expected %v got %v:\n",
+		http.StatusCreated, response.Code)
 	}
 }
 
-func TestDownloadPackage(t *testing.T) {
+func TestPackageDownload(t *testing.T) {
 	request, _ := http.NewRequest("GET", "test/package/pkg.tgz", nil)
 	response := httptest.NewRecorder()
 
-	downloadPackage(response, request)
+	packageDownload(response, request)
 	if response.Code != http.StatusOK {
-		t.Fatalf("Response code expected 200 got %v:\n", response.Code)
+		t.Fatalf("Response code expected %v got %v:\n",
+		http.StatusOK, response.Code)
 	}
 }
