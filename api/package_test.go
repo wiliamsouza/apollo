@@ -1,6 +1,7 @@
 package api
 
 import (
+	"strings"
 	"testing"
 	"net/http"
 	"net/http/httptest"
@@ -15,6 +16,11 @@ func TestPackageList(t *testing.T) {
 		t.Fatalf("Response code expected %v got %v:\n",
 		http.StatusOK, response.Code)
 	}
+
+	ct := response.HeaderMap["Content-Type"][0]
+	if !strings.EqualFold(ct, "application/json") {
+		t.Fatalf("Content-Type does not equal 'application/json'")
+	}
 }
 
 func TestPackageUpload(t *testing.T) {
@@ -26,6 +32,11 @@ func TestPackageUpload(t *testing.T) {
 		t.Fatalf("Response code expected %v got %v:\n",
 		http.StatusCreated, response.Code)
 	}
+
+	ct := response.HeaderMap["Content-Type"][0]
+	if !strings.EqualFold(ct, "application/json") {
+		t.Fatalf("Content-Type does not equal 'application/json'")
+	}
 }
 
 func TestPackageDownload(t *testing.T) {
@@ -36,5 +47,10 @@ func TestPackageDownload(t *testing.T) {
 	if response.Code != http.StatusOK {
 		t.Fatalf("Response code expected %v got %v:\n",
 		http.StatusOK, response.Code)
+	}
+
+	ct := response.HeaderMap["Content-Type"][0]
+	if !strings.EqualFold(ct, "application/json") {
+		t.Fatalf("Content-Type does not equal 'application/json'")
 	}
 }
