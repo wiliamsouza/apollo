@@ -27,33 +27,32 @@ func (s *S) TearDownSuite(c *gocheck.C) {
 	Session.DB.DropDatabase()
 }
 
-func (s *S) TestSessionRepositoryShouldReturnAMongoCollection(c *gocheck.C) {
-	var rep *mgo.Collection
-	rep = Session.Repository()
-	cRep := Session.DB.C("repository")
-	c.Assert(rep, gocheck.DeepEquals, cRep)
+func (s *S) TestSessionPackageShouldReturnAMongoGridFS(c *gocheck.C) {
+	var rep *mgo.GridFS
+	rep = Session.Package()
+	fsRep := Session.DB.GridFS("fs")
+	c.Assert(rep, gocheck.DeepEquals, fsRep)
 }
 
-func (s *S) TestSessionUserShouldReturnAMongoCollection(c *gocheck.C) {
-	var usr *mgo.Collection
-	usr = Session.User()
-	cUsr := Session.DB.C("user")
-	c.Assert(usr, gocheck.DeepEquals, cUsr)
+func (s *S) TestSessionCicleShouldReturnAMongoCollection(c *gocheck.C) {
+	var cicle *mgo.Collection
+	cicle = Session.Cicle()
+	cCicle := Session.DB.C("cicle")
+	c.Assert(cicle, gocheck.DeepEquals, cCicle)
 }
 
-func (s *S) TestSessionKeyShouldReturnKeyCollection(c *gocheck.C) {
-	key := Session.Key()
-	cKey := Session.DB.C("key")
-	c.Assert(key, gocheck.DeepEquals, cKey)
+func (s *S) TestSessionPlanShouldReturnAMongoCollection(c *gocheck.C) {
+	var plan *mgo.Collection
+	plan = Session.Plan()
+	cPlan := Session.DB.C("plan")
+	c.Assert(plan, gocheck.DeepEquals, cPlan)
 }
 
-func (s *S) TestSessionKeyBodyIsUnique(c *gocheck.C) {
-	key := Session.Key()
-	indexes, err := key.Indexes()
-	c.Assert(err, gocheck.IsNil)
-	c.Assert(indexes, gocheck.HasLen, 2)
-	c.Assert(indexes[1].Key, gocheck.DeepEquals, []string{"body"})
-	c.Assert(indexes[1].Unique, gocheck.DeepEquals, true)
+func (s *S) TestSessionCaseShouldReturnAMongoCollection(c *gocheck.C) {
+	var ccase *mgo.Collection
+	ccase = Session.Case()
+	cCase := Session.DB.C("case")
+	c.Assert(ccase, gocheck.DeepEquals, cCase)
 }
 
 func (s *S) TestConnect(c *gocheck.C) {

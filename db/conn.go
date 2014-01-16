@@ -36,19 +36,22 @@ func Connect() {
 	Session.DB = s.DB(name)
 }
 
-// Repository returns a reference to the "repository" collection in MongoDB.
-func (s *session) Repository() *mgo.Collection {
-	return s.DB.C("repository")
+// Package returns a reference to the "package" GridFS in MongoDB.
+func (s *session) Package() *mgo.GridFS {
+	return s.DB.GridFS("fs")
 }
 
-// User returns a reference to the "user" collection in MongoDB.
-func (s *session) User() *mgo.Collection {
-	return s.DB.C("user")
+// Cicle returns a reference to the "cicle" collection in MongoDB.
+func (s *session) Cicle() *mgo.Collection {
+	return s.DB.C("cicle")
 }
 
-func (s *session) Key() *mgo.Collection {
-	index := mgo.Index{Key: []string{"body"}, Unique: true}
-	c := s.DB.C("key")
-	c.EnsureIndex(index)
-	return c
+// Plan returns a reference to the "plan" collection in MongoDB.
+func (s *session) Plan() *mgo.Collection {
+	return s.DB.C("plan")
+}
+
+// Case returns a reference to the "case" collection in MongoDB.
+func (s *session) Case() *mgo.Collection {
+	return s.DB.C("case")
 }
