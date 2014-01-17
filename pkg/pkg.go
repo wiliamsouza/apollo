@@ -3,7 +3,10 @@ package pkg
 import (
 	"github.com/wiliamsouza/apollo/db"
 	"encoding/json"
+	"mime/multipart"
 	"strings"
+	"io"
+	"io/ioutil"
 )
 
 type Package struct {
@@ -19,7 +22,6 @@ func (pkg *Package) String() string {
         return strings.Join(parts, " ")
 }
 
-
 type PackageList []Package
 
 func (packages PackageList) MarshalJSON() ([]byte, error) {
@@ -30,8 +32,45 @@ func (packages PackageList) MarshalJSON() ([]byte, error) {
         return json.Marshal(m)
 }
 
+type Metadata struct {
+	Name string `json:"name"`
+	Version float32 `json:"version"`
+	Description string `json:"description"`
+	Install string `json:"install"`
+	Run string `json:"run"`
+}
+
+func NewPackage(file, meta, multipart.File, filename string) (Package, error) {
+	gfs, err : db.Session.Package().Create(filename)
+
+	err = io.Copy(gfs, file)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := ioutil.ReadAll(meta)
+	if err != nil {
+		return nil, err
+	}
+
+	metadata := &Metadata{}
+	json.Unmarshal(data, &metadata)
+	gfs.SetMeta(metadata)
+
+	pkg := Package{}
+	pkg.Name = filename
+	pkg.Description = metadata.Description
+
+	err = gfs.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return pkg, err
+}
+
 func ListPackages() (PackageList, error) {
 	var packages []Package
-	err := db.Session.Package().Find(nil).Sort("_id").All(&packages)
+	err := db.Session.Package().Find(nil).Sort("filename").All(&packages)
 	return PackageList(packages), err
 }
