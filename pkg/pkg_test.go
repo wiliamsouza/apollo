@@ -37,17 +37,17 @@ func (s *S) TestNewPackage(c *gocheck.C) {
 }
 
 func (s *S) TestListPackages(c *gocheck.C) {
-	filename1 := "package1.tgz"
-	pkgFile1, _ := os.Open("../data/" + filename1)
-	metaFile1, _ := os.Open("../data/metadata1.json")
-	pkg1, _ := NewPackage(pkgFile1, metaFile1, filename1)
-
 	filename2 := "package2.tgz"
 	pkgFile2, _ := os.Open("../data/" + filename2)
 	metaFile2, _ := os.Open("../data/metadata2.json")
 	pkg2, _ := NewPackage(pkgFile2, metaFile2, filename2)
 
-	pkgList := PackageList{pkg1, pkg2}
+	filename3 := "package3.tgz"
+	pkgFile3, _ := os.Open("../data/" + filename3)
+	metaFile3, _ := os.Open("../data/metadata3.json")
+	pkg3, _ := NewPackage(pkgFile3, metaFile3, filename3)
+
+	pkgList := PackageList{pkg2, pkg3}
 	pkgListDb, _ := ListPackages()
 	c.Assert(pkgList, gocheck.DeepEquals, pkgListDb)
 }
