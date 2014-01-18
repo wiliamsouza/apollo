@@ -7,31 +7,18 @@ import (
 	"io/ioutil"
 	"labix.org/v2/mgo/bson"
 	"mime/multipart"
-	"strings"
 )
 
 type Package struct {
-	Filename    string `json:"filename"`
+	Filename string `json:"filename"`
+	Metadata Meta   `json:"metadata"`
+}
+
+type Meta struct {
 	Description string `json:"description"`
 }
 
-func (pkg *Package) String() string {
-	parts := make([]string, 1, 2)
-	if pkg.Description != "" {
-		parts = append(parts, pkg.Description)
-	}
-	return strings.Join(parts, " ")
-}
-
 type PackageList []Package
-
-func (packages PackageList) MarshalJSON() ([]byte, error) {
-	m := make(map[string]string, len(packages))
-	for _, pkg := range packages {
-		m[pkg.Filename] = pkg.String()
-	}
-	return json.Marshal(m)
-}
 
 type Metadata struct {
 	Version     float32 `json:"version"`
@@ -48,9 +35,8 @@ func NewPackage(file, meta multipart.File, filename string) (Package, error) {
 	metadata := Metadata{}
 	json.Unmarshal(data, &metadata)
 	gfs.SetMeta(metadata)
-	pkg.Filename = filename
-	pkg.Description = metadata.Description
 	err = gfs.Close()
+	_ = db.Session.Package().Files.Find(bson.M{"filename": filename}).Select(bson.M{"filename": 1, "metadata.description": 1}).One(&pkg)
 	return pkg, err
 }
 

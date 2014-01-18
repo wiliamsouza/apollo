@@ -47,9 +47,6 @@ func (s *S) TestListPackages(c *gocheck.C) {
 	metaFile2, _ := os.Open("../data/metadata2.json")
 	pkg2, _ := NewPackage(pkgFile2, metaFile2, filename2)
 
-	// TODO: Description is not store in DB.
-	//pkg1 := Package{Filename: "package1.tgz", Description: "Package1 ON/Off test"}
-
 	pkgList := PackageList{pkg1, pkg2}
 	pkgListDb, _ := ListPackages()
 	c.Assert(pkgList, gocheck.DeepEquals, pkgListDb)
