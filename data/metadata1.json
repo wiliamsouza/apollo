@@ -1,6 +1,6 @@
 {
-    "version": 0.1
-    "description": "Package1 ON/Off test"
-    "install": "adb push dist/package1.jar /data/local/tmp/"
+    "version": 0.1,
+    "description": "Package1 ON/Off test",
+    "install": "adb push dist/package1.jar /data/local/tmp/",
     "run": "adb shell uiautomator runtest package1.jar -c com.github.wiliamsouza.package1.Package1Test"
 }
