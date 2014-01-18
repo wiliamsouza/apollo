@@ -27,9 +27,9 @@ func (s *S) TearDownSuite(c *gocheck.C) {
 }
 
 func (s *S) TestNewPackage(c *gocheck.C) {
-	filename := "bluetooth.tgz"
+	filename := "package1.tgz"
 	pkgFile, _ := os.Open("../data/" + filename)
-	metaFile, _ := os.Open("../data/metadata.json")
+	metaFile, _ := os.Open("../data/metadata1.json")
 	pkg, _ := NewPackage(pkgFile, metaFile, filename)
 	var pkgDb Package
 	_ = db.Session.Package().Files.Find(bson.M{"filename": filename}).Select(bson.M{"filename": 1, "metadata.description": 1}).One(&pkgDb)
@@ -37,7 +37,7 @@ func (s *S) TestNewPackage(c *gocheck.C) {
 }
 
 /*
-func (s *S) TestListPackagesShouldReturnAPackageList(c *gocheck.C) {
+func (s *S) TestListPackages(c *gocheck.C) {
 	var pkg Package
         pkg = &Package{Filename: "bluetooth.tgz", Description: "Bluetooth test"}
 	var pkglist PackageList

@@ -5,6 +5,7 @@ import (
 	"github.com/wiliamsouza/apollo/db"
 	"io"
 	"io/ioutil"
+	"labix.org/v2/mgo/bson"
 	"mime/multipart"
 	"strings"
 )
@@ -55,6 +56,6 @@ func NewPackage(file, meta multipart.File, filename string) (Package, error) {
 
 func ListPackages() (PackageList, error) {
 	var packages []Package
-	err := db.Session.Package().Find(nil).Sort("filename").All(&packages)
+	err := db.Session.Package().Files.Find(nil).Select(bson.M{"filename": 1, "metadata.description": 1}).Sort("filename").All(&packages)
 	return PackageList(packages), err
 }
