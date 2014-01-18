@@ -1,6 +1,6 @@
 {
     "version": 0.1
-    "description": "Bluetooth ON/Off test"
-    "install": "adb push dist/bluetooth.jar /data/local/tmp/"
-    "run": "adb shell uiautomator runtest bluetooth.jar -c com.github.wiliamsouza.bluetooth.BluetoothTest"
+    "description": "Package2 ON/Off test"
+    "install": "adb push dist/package2.jar /data/local/tmp/"
+    "run": "adb shell uiautomator runtest package2.jar -c com.github.wiliamsouza.package2.Package2Test"
 }
