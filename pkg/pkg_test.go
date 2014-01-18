@@ -36,13 +36,21 @@ func (s *S) TestNewPackage(c *gocheck.C) {
 	c.Assert(pkgDb, gocheck.DeepEquals, pkg)
 }
 
-/*
 func (s *S) TestListPackages(c *gocheck.C) {
-	var pkg Package
-        pkg = &Package{Filename: "bluetooth.tgz", Description: "Bluetooth test"}
-	var pkglist PackageList
-	pkglist = PackageList(pkg)
-	pkgList := ListPackages()
-	c.Assert(pkglist, gocheck.DeepEquals, pkgList)
+	filename1 := "package1.tgz"
+	pkgFile1, _ := os.Open("../data/" + filename1)
+	metaFile1, _ := os.Open("../data/metadata1.json")
+	pkg1, _ := NewPackage(pkgFile1, metaFile1, filename1)
+
+	filename2 := "package2.tgz"
+	pkgFile2, _ := os.Open("../data/" + filename2)
+	metaFile2, _ := os.Open("../data/metadata2.json")
+	pkg2, _ := NewPackage(pkgFile2, metaFile2, filename2)
+
+	// TODO: Description is not store in DB.
+	//pkg1 := Package{Filename: "package1.tgz", Description: "Package1 ON/Off test"}
+
+	pkgList := PackageList{pkg1, pkg2}
+	pkgListDb, _ := ListPackages()
+	c.Assert(pkgList, gocheck.DeepEquals, pkgListDb)
 }
-*/
