@@ -1,73 +1,77 @@
 package api
 
 import (
-	"strings"
-	"testing"
+	"github.com/globocom/config"
+	"github.com/wiliamsouza/apollo/db"
+	"github.com/wiliamsouza/apollo/pkg"
+	"launchpad.net/gocheck"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"testing"
 )
 
-func TestPackageList(t *testing.T) {
-	results := `[{"_id" : ObjectId("5287a2b1e5adc4f8e90b50a2"),
-	           "filename" : "pkg-1.0.tar.gz",
-		   "chunkSize" : 262144,
-		   "uploadDate" : ISODate("2013-11-16T16:52:01.089Z"),
-		   "md5" : "ac98f052e55d0c556e6536796d6b53eb",
-		   "length" : 2133},
-	           {"_id" : ObjectId("5287a2b1e5adc4f8e90b50a3"),
-	           "filename" : "pkg-2.0.tar.gz",
-		   "chunkSize" : 262145,
-		   "uploadDate" : ISODate("2013-12-16T16:52:01.089Z"),
-		   "md5" : "ac98f052e55d0c556e6536796d6b54eb",
-		   "length" : 2134}]`
+func Test(t *testing.T) { gocheck.TestingT(t) }
 
+type S struct{}
+
+var _ = gocheck.Suite(&S{})
+
+func (s *S) SetUpSuite(c *gocheck.C) {
+	err := config.ReadConfigFile("../etc/apollo.conf")
+	c.Assert(err, gocheck.IsNil)
+	config.Set("database:url", "127.0.0.1:27017")
+	config.Set("database:name", "apollo_api_tests")
+	db.Connect()
+	c.Assert(err, gocheck.IsNil)
+}
+
+func (s *S) TearDownSuite(c *gocheck.C) {
+	db.Session.DB.DropDatabase()
+}
+
+func (s *S) TestPackageList(c *gocheck.C) {
+	filename := "package1.tgz"
+	pkgFile, _ := os.Open("../data/" + filename)
+	metaFile, _ := os.Open("../data/metadata1.json")
+	_, _ = pkg.NewPackage(pkgFile, metaFile, filename)
+
+	filename2 := "package2.tgz"
+	pkgFile2, _ := os.Open("../data/" + filename2)
+	metaFile2, _ := os.Open("../data/metadata2.json")
+	_, _ = pkg.NewPackage(pkgFile2, metaFile2, filename2)
+
+	results := `[{"filename":"package1.tgz","metadata":{"description":"Package1 ON/OFF test"}},{"filename":"package2.tgz","metadata":{"description":"Package2 ON/OFF test"}}]`
 	request, _ := http.NewRequest("GET", "tests/packages", nil)
 	response := httptest.NewRecorder()
-
 	packageList(response, request)
-	if response.Code != http.StatusOK {
-		t.Fatalf("Response code expected %v got %v:\n",
-		http.StatusOK, response.Code)
-	}
+
+	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 
 	ct := response.HeaderMap["Content-Type"][0]
-	if !strings.EqualFold(ct, "application/json") {
-		t.Fatalf("Content-Type does not equal 'application/json'")
-	}
+	c.Assert(ct, gocheck.Equals, "application/json")
 
-	if !strings.EqualFold(response.Body.String(), results) {
-		t.Fatalf("Body does not equal 'results'")
-	}
+	c.Assert(response.Body.String(), gocheck.Equals, results)
 }
 
-func TestPackageUpload(t *testing.T) {
+func (s *S) TestPackageUpload(c *gocheck.C) {
 	request, _ := http.NewRequest("POST", "tests/packages", nil)
 	response := httptest.NewRecorder()
-
 	packageUpload(response, request)
-	if response.Code != http.StatusCreated {
-		t.Fatalf("Response code expected %v got %v:\n",
-		http.StatusCreated, response.Code)
-	}
+
+	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
 
 	ct := response.HeaderMap["Content-Type"][0]
-	if !strings.EqualFold(ct, "application/json") {
-		t.Fatalf("Content-Type does not equal 'application/json'")
-	}
+	c.Assert(ct, gocheck.Equals, "application/json")
 }
 
-func TestPackageDownload(t *testing.T) {
+func (s *S) TestPackageDownload(c *gocheck.C) {
 	request, _ := http.NewRequest("GET", "tests/packages/pkg.tgz", nil)
 	response := httptest.NewRecorder()
-
 	packageDownload(response, request)
-	if response.Code != http.StatusOK {
-		t.Fatalf("Response code expected %v got %v:\n",
-		http.StatusOK, response.Code)
-	}
+
+	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 
 	ct := response.HeaderMap["Content-Type"][0]
-	if !strings.EqualFold(ct, "application/json") {
-		t.Fatalf("Content-Type does not equal 'application/json'")
-	}
+	c.Assert(ct, gocheck.Equals, "application/json")
 }
