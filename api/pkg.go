@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func listPackages(w http.ResponseWriter, r *http.Request) {
+func ListPackages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	packages, err := pkg.ListPackages()
@@ -25,7 +25,7 @@ func listPackages(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func uploadPackage(w http.ResponseWriter, r *http.Request) {
+func UploadPackage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	pkgFile, pkgHeader, err := r.FormFile("package")
@@ -51,7 +51,7 @@ func uploadPackage(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func detailPackage(w http.ResponseWriter, r *http.Request) {
+func DetailPackage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	filename := filepath.Base(r.URL.Path)
@@ -68,7 +68,7 @@ func detailPackage(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func downloadPackage(w http.ResponseWriter, r *http.Request) {
+func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	filename := filepath.Base(r.URL.Path)
 	pkg, err := pkg.GetPackage(filename)

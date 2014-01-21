@@ -21,7 +21,7 @@ type S struct{}
 var _ = gocheck.Suite(&S{})
 
 func (s *S) SetUpSuite(c *gocheck.C) {
-	err := config.ReadConfigFile("../etc/apollo.conf")
+	err := config.ReadConfigFile("../etc/apollo-webserver.conf")
 	c.Assert(err, gocheck.IsNil)
 	config.Set("database:url", "127.0.0.1:27017")
 	config.Set("database:name", "apollo_api_tests")
@@ -49,9 +49,9 @@ func (s *S) TestListPackages(c *gocheck.C) {
 	defer metaFile2.Close()
 	defer db.Session.Package().Remove(filename1)
 	defer db.Session.Package().Remove(filename2)
-	request, _ := http.NewRequest("GET", "tests/packages", nil)
+	request, _ := http.NewRequest("GET", "test/package", nil)
 	response := httptest.NewRecorder()
-	listPackages(response, request)
+	ListPackages(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json")
@@ -74,10 +74,10 @@ func (s *S) TestUploadPackage(c *gocheck.C) {
 	_, _ = io.Copy(pkgPart, pkgFile)
 	_, _ = io.Copy(metaPart, metaFile)
 	writer.Close()
-	request, _ := http.NewRequest("POST", "tests/packages", body)
+	request, _ := http.NewRequest("POST", "test/package", body)
 	request.Header.Add("Content-Type", writer.FormDataContentType())
 	response := httptest.NewRecorder()
-	uploadPackage(response, request)
+	UploadPackage(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json")
@@ -86,7 +86,7 @@ func (s *S) TestUploadPackage(c *gocheck.C) {
 
 func (s *S) TestDetailPackage(c *gocheck.C) {
 	results := `{"filename":"package1.tgz","metadata":{"version":0.1,"description":"Package1 ON/OFF test","install":"adb push dist/package1.jar /data/local/tmp/","run":"adb shell uiautomator runtest package1.jar -c com.github.wiliamsouza.package1.Package1Test"}}`
-	request, _ := http.NewRequest("GET", "tests/packages/package1.tgz", nil)
+	request, _ := http.NewRequest("GET", "test/package/package1.tgz", nil)
 	filename := "package1.tgz"
 	metadata := "metadata1.json"
 	pkgFile, _ := os.Open("../data/" + filename)
@@ -96,7 +96,7 @@ func (s *S) TestDetailPackage(c *gocheck.C) {
 	defer metaFile.Close()
 	defer db.Session.Package().Remove(filename)
 	response := httptest.NewRecorder()
-	detailPackage(response, request)
+	DetailPackage(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	//ct := response.HeaderMap["Content-Type"][0]
 	//c.Assert(ct, gocheck.Equals, "application/json")
@@ -105,7 +105,7 @@ func (s *S) TestDetailPackage(c *gocheck.C) {
 }
 
 func (s *S) TestDownloadPackage(c *gocheck.C) {
-	request, _ := http.NewRequest("GET", "tests/packages/download/package1.tgz", nil)
+	request, _ := http.NewRequest("GET", "test/package/download/package1.tgz", nil)
 	filename := "package1.tgz"
 	metadata := "metadata1.json"
 	pkgFile, _ := os.Open("../data/" + filename)
@@ -115,7 +115,7 @@ func (s *S) TestDownloadPackage(c *gocheck.C) {
 	defer metaFile.Close()
 	defer db.Session.Package().Remove(filename)
 	response := httptest.NewRecorder()
-	downloadPackage(response, request)
+	DownloadPackage(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	md5 := response.HeaderMap["Etag"][0]

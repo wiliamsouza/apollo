@@ -16,7 +16,7 @@ type S struct{}
 var _ = gocheck.Suite(&S{})
 
 func (s *S) SetUpSuite(c *gocheck.C) {
-	err := config.ReadConfigFile("../etc/apollo.conf")
+	err := config.ReadConfigFile("../etc/apollo-webserver.conf")
 	c.Check(err, gocheck.IsNil)
 	config.Set("database:name", "apollo_pkg_tests")
 	db.Connect()
