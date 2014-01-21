@@ -6,8 +6,8 @@ Easy way to write, build, run and collect test results.
 Install
 -------
 
-Install Go [tools]http://golang.org/doc/install#install I prefer use
-[godeb]http://blog.labix.org/2013/06/15/in-flight-deb-packages-of-go to that.
+Install Go [tools](http://golang.org/doc/install#install) I prefer use
+[godeb](http://blog.labix.org/2013/06/15/in-flight-deb-packages-of-go) to do that.
 
 Get the source code:
 
