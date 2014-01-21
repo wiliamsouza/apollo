@@ -10,22 +10,18 @@ import (
 )
 
 type Package struct {
-	Filename string `json:"filename"`
-	Metadata Meta   `json:"metadata"`
+	Filename string   `json:"filename"`
+	Metadata Metadata `json:"metadata"`
 }
 
-type Meta struct {
-	Description string `json:"description"`
+type Metadata struct {
+	Version     float32 `json:"version,omitempty"`
+	Description string  `json:"description"`
+	Install     string  `json:"install,omitempty"`
+	Run         string  `json:"run,omitempty"`
 }
 
 type PackageList []Package
-
-type Metadata struct {
-	Version     float32 `json:"version"`
-	Description string  `json:"description"`
-	Install     string  `json:"install"`
-	Run         string  `json:"run"`
-}
 
 func NewPackage(file, meta multipart.File, filename string) (Package, error) {
 	pkg := Package{}
