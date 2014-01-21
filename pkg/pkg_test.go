@@ -53,6 +53,18 @@ func (s *S) TestListPackages(c *gocheck.C) {
 	c.Assert(pkgList, gocheck.DeepEquals, pkgListDb)
 }
 
+func (s *S) TestDetailPackage(c *gocheck.C) {
+	filename := "package1.tgz"
+	pkgFile, _ := os.Open("../data/" + filename)
+	metaFile, _ := os.Open("../data/metadata1.json")
+	_, _ = NewPackage(pkgFile, metaFile, filename)
+	pkg, _ := DetailPackage(filename)
+	var pkgDb Package
+	_ = db.Session.Package().Files.Find(bson.M{"filename": filename}).One(&pkgDb)
+	defer db.Session.Package().Remove(filename)
+	c.Assert(pkgDb, gocheck.DeepEquals, pkg)
+}
+
 func (s *S) TestGetPackage(c *gocheck.C) {
 	filename := "package1.tgz"
 	pkgFile, _ := os.Open("../data/" + filename)
@@ -64,16 +76,4 @@ func (s *S) TestGetPackage(c *gocheck.C) {
 	md5Db := pkgDb.MD5()
 	defer db.Session.Package().Remove(filename)
 	c.Assert(md5Db, gocheck.Equals, md5)
-}
-
-func (s *S) TestDetailPackage(c *gocheck.C) {
-	filename := "package1.tgz"
-	pkgFile, _ := os.Open("../data/" + filename)
-	metaFile, _ := os.Open("../data/metadata1.json")
-	_, _ = NewPackage(pkgFile, metaFile, filename)
-	pkg, _ := DetailPackage(filename)
-	var pkgDb Package
-	_ = db.Session.Package().Files.Find(bson.M{"filename": filename}).One(&pkgDb)
-	defer db.Session.Package().Remove(filename)
-	c.Assert(pkgDb, gocheck.DeepEquals, pkg)
 }
