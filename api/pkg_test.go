@@ -2,16 +2,17 @@ package api
 
 import (
 	"bytes"
-	"github.com/globocom/config"
-	"github.com/wiliamsouza/apollo/db"
-	"github.com/wiliamsouza/apollo/pkg"
 	"io"
-	"launchpad.net/gocheck"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/globocom/config"
+	"github.com/wiliamsouza/apollo/db"
+	"github.com/wiliamsouza/apollo/pkg"
+	"launchpad.net/gocheck"
 )
 
 func Test(t *testing.T) { gocheck.TestingT(t) }

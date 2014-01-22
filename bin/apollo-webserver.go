@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/globocom/config"
 	"github.com/gorilla/mux"
 	"github.com/wiliamsouza/apollo/api"
 	"github.com/wiliamsouza/apollo/db"
-	"log"
-	"net/http"
 )
 
 const version = "0.0.1"

@@ -2,12 +2,13 @@ package pkg
 
 import (
 	"encoding/json"
-	"github.com/wiliamsouza/apollo/db"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
+
+	"github.com/wiliamsouza/apollo/db"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
-	"mime/multipart"
 )
 
 type Package struct {

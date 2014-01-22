@@ -2,11 +2,12 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/wiliamsouza/apollo/pkg"
 	"io"
 	"net/http"
 	"path/filepath"
 	"strconv"
+
+	"github.com/wiliamsouza/apollo/pkg"
 )
 
 func ListPackages(w http.ResponseWriter, r *http.Request) {

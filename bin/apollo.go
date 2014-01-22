@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	fmt.Println("websocket")
+	fmt.Println("apollo")
 }

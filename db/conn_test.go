@@ -5,10 +5,11 @@
 package db
 
 import (
+	"testing"
+
 	"github.com/globocom/config"
 	"labix.org/v2/mgo"
 	"launchpad.net/gocheck"
-	"testing"
 )
 
 func Test(t *testing.T) { gocheck.TestingT(t) }
