@@ -23,7 +23,7 @@ var Session session
 func Connect() {
 	url, _ := config.GetString("database:url")
 	if url == "" {
-		url = "localhost:27017"
+		url = "127.0.0.1:27017"
 	}
 	name, _ := config.GetString("database:name")
 	if name == "" {

@@ -15,7 +15,7 @@ import (
 const version = "0.0.1"
 
 func main() {
-	configFile := flag.String("config", "/etc/apollo-webserver.conf", "Apollo webserver configuration file")
+	configFile := flag.String("config", "/etc/apollo.conf", "Apollo webserver configuration file")
 	gVersion := flag.Bool("version", false, "Print version and exit")
 
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	}
 	err := config.ReadAndWatchConfigFile(*configFile)
 	if err != nil {
-		msg := `Could not find apollo config file. Searched on %s. For an example conf check /etc/apollo-webserver.conf file.\n %s`
+		msg := `Could not find apollo config file. Searched on %s. For an example conf check /etc/apollo.conf file.\n %s`
 		log.Panicf(msg, *configFile, err)
 	}
 
@@ -39,13 +39,9 @@ func main() {
 	r.HandleFunc("/test/package/download/{filename}", api.DownloadPackage).Methods("GET")
 	http.Handle("/", r)
 
-	bind, err := config.GetString("bind")
+	bind, err := config.GetString("webserver:bind")
 	if err != nil {
-		var perr error
-		bind, perr = config.GetString("webserver:port")
-		if perr != nil {
-			panic(err)
-		}
+		panic(err)
 	}
 
 	err = http.ListenAndServe(bind, nil)
