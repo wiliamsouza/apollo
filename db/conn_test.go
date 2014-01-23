@@ -20,7 +20,7 @@ var _ = gocheck.Suite(&S{})
 
 func (s *S) SetUpSuite(c *gocheck.C) {
 	config.Set("database:url", "127.0.0.1:27017")
-	config.Set("database:name", "apollo_tests")
+	config.Set("database:name", "apollo_db_tests")
 	Connect()
 }
 
@@ -42,13 +42,6 @@ func (s *S) TestSessionCicleShouldReturnAMongoCollection(c *gocheck.C) {
 	c.Assert(cicle, gocheck.DeepEquals, cCicle)
 }
 
-func (s *S) TestSessionPlanShouldReturnAMongoCollection(c *gocheck.C) {
-	var plan *mgo.Collection
-	plan = Session.Plan()
-	cPlan := Session.DB.C("plan")
-	c.Assert(plan, gocheck.DeepEquals, cPlan)
-}
-
 func (s *S) TestSessionCaseShouldReturnAMongoCollection(c *gocheck.C) {
 	var ccase *mgo.Collection
 	ccase = Session.Case()
@@ -56,9 +49,37 @@ func (s *S) TestSessionCaseShouldReturnAMongoCollection(c *gocheck.C) {
 	c.Assert(ccase, gocheck.DeepEquals, cCase)
 }
 
+func (s *S) TestSessionOrganizationShouldReturnAMongoCollection(c *gocheck.C) {
+	var org *mgo.Collection
+	org = Session.Organization()
+	cOrg := Session.DB.C("organization")
+	c.Assert(org, gocheck.DeepEquals, cOrg)
+}
+
+func (s *S) TestSessionTeamShouldReturnAMongoCollection(c *gocheck.C) {
+	var team *mgo.Collection
+	team = Session.Team()
+	cTeam := Session.DB.C("team")
+	c.Assert(team, gocheck.DeepEquals, cTeam)
+}
+
+func (s *S) TestSessionUserShouldReturnAMongoCollection(c *gocheck.C) {
+	var user *mgo.Collection
+	user = Session.User()
+	cUser := Session.DB.C("user")
+	c.Assert(user, gocheck.DeepEquals, cUser)
+}
+
+func (s *S) TestSessionDeviceShouldReturnAMongoCollection(c *gocheck.C) {
+	var device *mgo.Collection
+	device = Session.Device()
+	cDevice := Session.DB.C("device")
+	c.Assert(device, gocheck.DeepEquals, cDevice)
+}
+
 func (s *S) TestConnect(c *gocheck.C) {
 	Connect()
-	c.Assert(Session.DB.Name, gocheck.Equals, "apollo_tests")
+	c.Assert(Session.DB.Name, gocheck.Equals, "apollo_db_tests")
 	err := Session.DB.Session.Ping()
 	c.Assert(err, gocheck.IsNil)
 }

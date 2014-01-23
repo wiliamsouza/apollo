@@ -46,12 +46,27 @@ func (s *session) Cicle() *mgo.Collection {
 	return s.DB.C("cicle")
 }
 
-// Plan returns a reference to the "plan" collection in MongoDB.
-func (s *session) Plan() *mgo.Collection {
-	return s.DB.C("plan")
-}
-
 // Case returns a reference to the "case" collection in MongoDB.
 func (s *session) Case() *mgo.Collection {
 	return s.DB.C("case")
+}
+
+// Organization returns a reference to the "organization" collection in MongoDB.
+func (s *session) Organization() *mgo.Collection {
+	return s.DB.C("organization")
+}
+
+// Team returns a reference to the "team" collection in MongoDB.
+func (s *session) Team() *mgo.Collection {
+	return s.DB.C("team")
+}
+
+// User returns a reference to the "user" collection in MongoDB.
+func (s *session) User() *mgo.Collection {
+	return s.DB.C("user")
+}
+
+// Device returns a reference to the "device" collection in MongoDB.
+func (s *session) Device() *mgo.Collection {
+	return s.DB.C("device")
 }
