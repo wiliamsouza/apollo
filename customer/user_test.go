@@ -3,7 +3,6 @@ package customer
 import (
 	"testing"
 
-	"fmt"
 	"github.com/globocom/config"
 	"github.com/wiliamsouza/apollo/db"
 	"labix.org/v2/mgo/bson"
@@ -31,12 +30,12 @@ func (s *S) TestNewUser(c *gocheck.C) {
 	email := "jhon@doe.com"
 	user, _ := NewUser("Jhon Doe", email, "12345")
 	defer db.Session.User().Remove(bson.M{"_id": email})
-	var userDb *User
-	_ = db.Session.User().Find(bson.M{"_id": email}).Select(bson.M{"name": 1, "email": 1}).One(&userDb)
-	fmt.Println(userDb)
-	c.Assert(userDb, gocheck.DeepEquals, user)
-	c.Assert(userDb.Name, gocheck.DeepEquals, user.Name)
-	c.Assert(userDb.Email, gocheck.DeepEquals, user.Email)
+	var userDb User
+	_ = db.Session.User().Find(bson.M{"_id": email}).One(&userDb)
+	c.Assert(userDb.Name, gocheck.Equals, user.Name)
+	c.Assert(userDb.Email, gocheck.Equals, user.Email)
+	c.Assert(userDb.Password, gocheck.Equals, user.Password)
+	c.Assert(userDb.ApiKey, gocheck.Equals, user.ApiKey)
 }
 
 func (s *S) TestEncryptPassword(c *gocheck.C) {

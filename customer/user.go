@@ -9,20 +9,19 @@ import (
 	"code.google.com/p/go-uuid/uuid"
 	"code.google.com/p/go.crypto/bcrypt"
 	"github.com/wiliamsouza/apollo/db"
-	"labix.org/v2/mgo/bson"
 )
 
 type User struct {
 	Name      string    `bson:"name"`
 	Email     string    `bson:"_id"`
-	Password  string    `bson:"password,omitempty"`
-	ApiKey    string    `bson:"apikey,omitempty"`
-	Created   time.Time `bson:"created,omitempty"`
-	LastLogin time.Time `bson:"lastlogin,omitempty"`
+	Password  string    `bson:"password"`
+	ApiKey    string    `bson:"apikey"`
+	Created   time.Time `bson:"created"`
+	LastLogin time.Time `bson:"lastlogin"`
 }
 
-func NewUser(name, email, password string) (*User, error) {
-	u := &User{Name: name, Email: email, Password: password}
+func NewUser(name, email, password string) (User, error) {
+	u := User{Name: name, Email: email, Password: password}
 	v, err := u.ValidateEmail()
 	if !v {
 		return u, err
@@ -36,9 +35,7 @@ func NewUser(name, email, password string) (*User, error) {
 	if err := db.Session.User().Insert(&u); err != nil {
 		return u, err
 	}
-	var user *User
-	_ = db.Session.User().Find(bson.M{"_id": email}).Select(bson.M{"name": 1, "email": 1}).One(&user)
-	return user, nil
+	return u, nil
 }
 
 func (u *User) ValidateEmail() (bool, error) {
