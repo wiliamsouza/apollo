@@ -59,3 +59,14 @@ Downloading `package`:
     curl -vv -X GET http://localhost:8000/test/package/download/package1.tgz -o package.tgz
 
 It will download `package`.
+
+User API
+--------
+
+Adding a new `user`:
+
+    curl -v --header "Content-Type: application/json" --request POST --data '{"name":"Jhon Doe","email":"jhon@doe.com","password":"12345"}' http://localhost:8000/user
+
+It will return `user` name and email:
+
+    {"name":"Jhon Doe","email":"jhon@doe.com"}

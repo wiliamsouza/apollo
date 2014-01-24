@@ -37,6 +37,7 @@ func main() {
 	r.HandleFunc("/test/package", api.UploadPackage).Methods("POST")
 	r.HandleFunc("/test/package/{filename}", api.DetailPackage).Methods("GET")
 	r.HandleFunc("/test/package/download/{filename}", api.DownloadPackage).Methods("GET")
+	r.HandleFunc("/user", api.NewUser).Methods("POST")
 	http.Handle("/", r)
 
 	bind, err := config.GetString("webserver:bind")
