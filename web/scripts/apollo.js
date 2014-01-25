@@ -18,9 +18,10 @@ var NewUserForm = React.createClass({
     $.ajax({
       url: this.props.url,
       type: 'POST',
-      data: user,
-      success: function(data) {
-	      console.log(data)
+      dataType: 'json',
+      data: JSON.stringify(user),
+      success: function(user) {
+	      console.log(user)
       }.bind(this)
     });
   },
