@@ -1,16 +1,16 @@
 Web client
 ==========
 
-Test using [react](http://facebook.github.io/react/index.html)
+Test using [React](http://facebook.github.io/react/index.html)
 to write the Apollo web api client.
 
 Usage
 -----
 
-It uses [npm](https://npmjs.org/) and [bower](http://bower.io/)
+It uses [npm](https://npmjs.org/) and [Bower](http://bower.io/)
 to handler dependencies.
 
-Install [node.js](http://nodejs.org/download/) before run the commands below.
+Install [Node.js](http://nodejs.org/download/) before run the commands below.
 
 ```
 npm install
@@ -42,3 +42,12 @@ node start
 ```
 
 Point your browser to http://localhost:3000/.
+
+Development
+-----------
+
+When making modifcation to React `JSX` file run first:
+
+```
+jsx --watch scripts/src/ scripts/build/
+```
