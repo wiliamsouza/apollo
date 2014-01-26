@@ -1,0 +1,28 @@
+{
+  "name": "apollo-web-app",
+  "version": "0.0.1",
+  "homepage": "https://github.com/wiliamsouza/apollo",
+  "authors": [
+    "Wiliam Souza <wiliamsouza83@gmail.com>"
+  ],
+  "description": "Apollo wep application",
+  "main": "css/apollo.css",
+  "keywords": [
+    "Apollo",
+    "API",
+    "RESTful"
+  ],
+  "license": "?",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.3",
+    "react": "~0.8.0"
+  }
+}

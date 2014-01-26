@@ -1,1 +1,5 @@
 *.swp
+bin/apollo-webserver
+web/bower_components/
+web/node_modules/
+
