@@ -27,12 +27,13 @@ var NewUserForm = React.createClass({
   },
   render: function() {
     return (
-      <form className="newUserForm" onSubmit={this.handleSubmit}>
-        <input type="text" placeholder="Full name." ref="name" />
-        <input type="text" placeholder="Your email." ref="email" />
-        <input type="password" placeholder="Password." ref="pwd" />
-        <input type="password" placeholder="Password again." ref="pass" />
-        <input type="submit" value="Post" />
+      <form className="newUserForm form-sigin" role="form" onSubmit={this.handleSubmit}>
+        <h2 className="form-signin-heading">Please sign in</h2>
+        <input type="text" className="form-control" placeholder="Full name" ref="name" />
+        <input type="text" className="form-control" placeholder="Your email" ref="email" />
+        <input type="password" className="form-control" placeholder="Password" ref="pwd" />
+        <input type="password" className="form-control" placeholder="Password again" ref="pass" />
+        <input type="submit" className="btn btn-lg btn-primary btn-block" value="Sign in" />
       </form>
     );
   }
