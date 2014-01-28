@@ -1,9 +1,30 @@
 package device
 
 type Device struct {
-	Permision Permisions
-	Owner     string
-	Status    string
+	Permision       Permisions
+	Owner           string
+	Status          string
+	Codename        string
+	Vendor          string
+	Manufacturer    string
+	Type            string
+	Platform        string
+	Cpu             string
+	Gpu             string
+	Ram             string
+	Weight          string
+	Dimensions      string
+	ScreenDimension string
+	Resolution      string
+	ScreenDensity   string
+	InternalStorage string
+	SdCard          string
+	Bluetooth       string
+	Wifi            string
+	MainCamera      string
+	SecondaryCamera string
+	Power           string
+	Peripherals     []string
 }
 
 type Permissions struct {

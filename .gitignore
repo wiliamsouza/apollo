@@ -2,5 +2,5 @@
 bin/apollo-webserver
 web/bower_components/
 web/node_modules/
+web/scripts/build/apollo.js
 web/scripts/build/.module-cache/
-
