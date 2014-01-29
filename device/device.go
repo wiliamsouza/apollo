@@ -21,7 +21,7 @@ type Device struct {
 	InternalStorage string
 	SdCard          string
 	Bluetooth       string
-	Wifi            string
+	WiFi            string
 	MainCamera      string
 	SecondaryCamera string
 	Power           string
