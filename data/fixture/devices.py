@@ -36,7 +36,8 @@ for info in soup.find_all('span', class_='device'):
     for spec in specs.find_all('tr'):
         try:
             key = ''.join(x for x in spec.th.text.title() if not x.isspace())
-            specifications[key.replace('-', '')] = spec.td.text.rstrip('\n')
+            key = key.replace('-', '').replace(':', '')
+            specifications[key] = spec.td.text.rstrip('\n')
         except AttributeError:
             print("Error parssing: {0}".format(spec))
             print("-" * 80)
