@@ -1,7 +1,7 @@
 package device
 
 type Device struct {
-	Permision       Permisions
+	Permission      Permissions
 	Owner           string
 	Status          string
 	Name            string
@@ -25,15 +25,15 @@ type Device struct {
 	MainCamera      string
 	SecondaryCamera string
 	Power           string
-	Peripherals     []string
+	Peripherals     string
 }
 
 type Permissions struct {
-	Organization Permision
-	Team         Permision
+	Organization Permission
+	Team         Permission
 }
 
-type Permision struct {
+type Permission struct {
 	Run     bool
 	Results bool
 	Info    bool
