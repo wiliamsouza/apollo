@@ -4,6 +4,7 @@ type Device struct {
 	Permision       Permisions
 	Owner           string
 	Status          string
+	Name            string
 	Codename        string
 	Vendor          string
 	Manufacturer    string
