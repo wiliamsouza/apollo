@@ -4,3 +4,7 @@ web/bower_components/
 web/node_modules/
 web/scripts/build/apollo.js
 web/scripts/build/.module-cache/
+data/fixture/bin
+data/fixture/include
+data/fixture/lib
+data/fixture/local
