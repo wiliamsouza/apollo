@@ -93,5 +93,5 @@ func (s *S) TestConnectDefaultSettings(c *gocheck.C) {
 	config.Unset("database:name")
 	Connect()
 	c.Assert(Session.DB.Name, gocheck.Equals, "apollo")
-	c.Assert(Session.DB.Session.LiveServers(), gocheck.DeepEquals, []string{"localhost:27017"})
+	c.Assert(Session.DB.Session.LiveServers(), gocheck.DeepEquals, []string{"127.0.0.1:27017"})
 }
