@@ -70,3 +70,7 @@ Adding a new `user`:
 It will return `user` name and email:
 
     {"name":"Jhon Doe","email":"jhon@doe.com"}
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wiliamsouza/apollo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
