@@ -1,4 +1,4 @@
-package team
+package customer
 
 type Team struct {
 	Name  string

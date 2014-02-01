@@ -1,4 +1,4 @@
-package organization
+package customer
 
 type Organization struct {
 	Name   string
