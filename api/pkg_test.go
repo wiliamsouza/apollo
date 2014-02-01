@@ -50,7 +50,7 @@ func (s *S) TestListPackages(c *gocheck.C) {
 	defer metaFile2.Close()
 	defer db.Session.Package().Remove(filename1)
 	defer db.Session.Package().Remove(filename2)
-	request, _ := http.NewRequest("GET", "test/package", nil)
+	request, _ := http.NewRequest("GET", "tests/packages", nil)
 	response := httptest.NewRecorder()
 	ListPackages(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
@@ -75,7 +75,7 @@ func (s *S) TestUploadPackage(c *gocheck.C) {
 	_, _ = io.Copy(pkgPart, pkgFile)
 	_, _ = io.Copy(metaPart, metaFile)
 	writer.Close()
-	request, _ := http.NewRequest("POST", "test/package", body)
+	request, _ := http.NewRequest("POST", "tests/packages", body)
 	request.Header.Add("Content-Type", writer.FormDataContentType())
 	response := httptest.NewRecorder()
 	UploadPackage(response, request)
@@ -106,7 +106,7 @@ func (s *S) TestDetailPackage(c *gocheck.C) {
 }
 
 func (s *S) TestDownloadPackage(c *gocheck.C) {
-	request, _ := http.NewRequest("GET", "test/package/download/package1.tgz", nil)
+	request, _ := http.NewRequest("GET", "tests/packages/downloads/package1.tgz", nil)
 	filename := "package1.tgz"
 	metadata := "metadata1.json"
 	pkgFile, _ := os.Open("../data/" + filename)

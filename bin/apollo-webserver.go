@@ -33,11 +33,11 @@ func main() {
 	db.Connect()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/test/package", api.ListPackages).Methods("GET")
-	r.HandleFunc("/test/package", api.UploadPackage).Methods("POST")
-	r.HandleFunc("/test/package/{filename}", api.DetailPackage).Methods("GET")
-	r.HandleFunc("/test/package/download/{filename}", api.DownloadPackage).Methods("GET")
-	r.HandleFunc("/user", api.NewUser).Methods("POST")
+	r.HandleFunc("/tests/packages", api.ListPackages).Methods("GET")
+	r.HandleFunc("/tests/packages", api.UploadPackage).Methods("POST")
+	r.HandleFunc("/tests/packages/{filename}", api.DetailPackage).Methods("GET")
+	r.HandleFunc("/tests/packages/downloads/{filename}", api.DownloadPackage).Methods("GET")
+	r.HandleFunc("/users", api.NewUser).Methods("POST")
 	http.Handle("/", r)
 
 	bind, err := config.GetString("webserver:bind")

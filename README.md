@@ -29,7 +29,7 @@ Package API
 
 Uploading a `package`:
 
-    curl -vv --request POST --form package=@package1.tgz --form metadata=@metadata1.json http://localhost:8000/test/package
+    curl -vv --request POST --form package=@package1.tgz --form metadata=@metadata1.json http://localhost:8000/tests/packages
 
 The `data` directory contains some files to test.
 
@@ -40,7 +40,7 @@ It will return basic information about `package`:
 Listing `packages`:
 
 
-    curl -vv --header "Content-Type: application/json" -X GET http://localhost:8000/test/package
+    curl -vv --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages
 
 It will return a list of `packages`:
 
@@ -48,7 +48,7 @@ It will return a list of `packages`:
 
 Detailing `package`:
 
-    curl -vv --header "Content-Type: application/json" -X GET http://localhost:8000/test/package/package1.tgz
+    curl -vv --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages/package1.tgz
 
 It will return `package` detail:
 
@@ -56,7 +56,7 @@ It will return `package` detail:
 
 Downloading `package`:
 
-    curl -vv -X GET http://localhost:8000/test/package/download/package1.tgz -o package.tgz
+    curl -vv -X GET http://localhost:8000/tests/packages/downloads/package1.tgz -o package.tgz
 
 It will download `package`.
 
@@ -65,7 +65,7 @@ User API
 
 Adding a new `user`:
 
-    curl -v --header "Content-Type: application/json" --request POST --data '{"name":"Jhon Doe","email":"jhon@doe.com","password":"12345"}' http://localhost:8000/user
+    curl -v --header "Content-Type: application/json" --request POST --data '{"name":"Jhon Doe","email":"jhon@doe.com","password":"12345"}' http://localhost:8000/users
 
 It will return `user` name and email:
 
