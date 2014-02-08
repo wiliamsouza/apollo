@@ -8,6 +8,7 @@ import (
 
 	"github.com/globocom/config"
 	"github.com/gorilla/mux"
+
 	"github.com/wiliamsouza/apollo/api"
 	"github.com/wiliamsouza/apollo/db"
 )
