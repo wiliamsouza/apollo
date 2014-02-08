@@ -29,12 +29,12 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 	var u requestUser
 	err = json.Unmarshal(b, &u)
 	if err != nil {
-		http.Error(w, "Error parssing json request: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error parssing json request: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 	newUser, err := customer.NewUser(u.Name, u.Email, u.Password)
 	if err != nil {
-		http.Error(w, "Error creating new user: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error creating new user: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 	user := responseUser{Name: newUser.Name, Email: newUser.Email}
