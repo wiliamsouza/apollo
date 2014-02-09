@@ -65,12 +65,67 @@ User API
 
 Adding a new `user`:
 
-    curl -v --header "Content-Type: application/json" --request POST --data '{"name":"Jhon Doe","email":"jhon@doe.com","password":"12345"}' http://localhost:8000/users
+```
+curl -v --header "Content-Type: application/json" --request POST --data '{"name":"Jhon Doe","email":"jhon@doe.com","password":"12345"}' http://localhost:8000/users
+```
 
 It will return `user` name and email:
 
-    {"name":"Jhon Doe","email":"jhon@doe.com"}
+```
+{"name":"Jhon Doe","email":"jhon@doe.com"}
+```
 
+Organization API
+----------------
+
+Adding a new `organization`:
+
+```
+curl -vv --header "Content-Type: application/json" --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}' http://localhost:8000/organizations
+```
+
+It will return:
+
+```
+{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}
+```
+
+List `organizations`:
+
+```
+curl -vv --header "Content-Type: application/json" --request GET http://localhost:8000/organizations
+```
+
+It will return:
+
+```
+[{"name":"janecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jane@doe.com"]},{"name":"jhoncorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}]
+```
+
+Detail `organization`:
+
+```
+curl -vv --header "Content-Type: application/json" --request GET http://localhost:8000/organizations/doecorp
+```
+
+It will return:
+
+```
+{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}
+```
+
+Update `organization`:
+
+```
+curl -vv --header "Content-Type: application/json" --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
+```
+
+Update is used to simulate teams and admins deletion, change and addtion.
+
+Delete:
+
+```
+curl -vv --header "Content-Type: application/json" --request DELETE http://localhost:8000/organizations/doecorp
+```
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wiliamsouza/apollo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
