@@ -10,3 +10,5 @@ data/fixture/include
 data/fixture/lib
 data/fixture/local
 data/fixture/devices
+Godeps/Readme
+Godeps/_workspace/
