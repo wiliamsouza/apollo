@@ -4,9 +4,10 @@ import (
 	"testing"
 
 	"github.com/globocom/config"
-	"github.com/wiliamsouza/apollo/db"
 	"labix.org/v2/mgo/bson"
 	"launchpad.net/gocheck"
+
+	"github.com/wiliamsouza/apollo/db"
 )
 
 func Test(t *testing.T) { gocheck.TestingT(t) }
@@ -18,7 +19,7 @@ var _ = gocheck.Suite(&S{})
 func (s *S) SetUpSuite(c *gocheck.C) {
 	err := config.ReadConfigFile("../etc/apollo.conf")
 	c.Check(err, gocheck.IsNil)
-	config.Set("database:name", "apollo_user_tests")
+	config.Set("database:name", "apollo_customer_tests")
 	db.Connect()
 }
 
