@@ -1,6 +1,6 @@
 *.swp
-bin/apollo-webserver
-bin/apollo-websocket
+bin/apollo
+bin/apollod
 web/bower_components/
 web/node_modules/
 web/scripts/build/apollo.js

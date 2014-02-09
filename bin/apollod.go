@@ -11,6 +11,7 @@ import (
 
 	"github.com/wiliamsouza/apollo/api"
 	"github.com/wiliamsouza/apollo/db"
+	"github.com/wiliamsouza/apollo/ws"
 )
 
 const version = "0.0.1"
@@ -23,13 +24,13 @@ func (h MuxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	configFile := flag.String("config", "/etc/apollo.conf", "Apollo webserver configuration file")
+	configFile := flag.String("config", "/etc/apollo.conf", "Apollo daemon configuration file")
 	gVersion := flag.Bool("version", false, "Print version and exit")
 
 	flag.Parse()
 
 	if *gVersion {
-		fmt.Printf("apollo-webserver version %s\n", version)
+		fmt.Printf("apollod version %s\n", version)
 		return
 	}
 	err := config.ReadAndWatchConfigFile(*configFile)
@@ -51,16 +52,18 @@ func main() {
 	r.Handle("/organizations/{name}", MuxHandler(api.DetailOrganization)).Methods("GET")
 	r.Handle("/organizations/{name}", MuxHandler(api.ModifyOrganization)).Methods("PUT")
 	r.Handle("/organizations/{name}", MuxHandler(api.DeleteOrganization)).Methods("DELETE")
+	r.Handle("/ws/web/{apikey}", MuxHandler(ws.Web))
+	r.Handle("/ws/runner/{apikey}", MuxHandler(ws.Runner))
 
 	http.Handle("/", r)
 
-	bind, err := config.GetString("webserver:bind")
+	bind, err := config.GetString("daemon:bind")
 	if err != nil {
 		panic(err)
 	}
 
 	err = http.ListenAndServe(bind, nil)
 	if err != nil {
-		log.Fatal("Error apollo-webserver ListenAndServe: ", err)
+		log.Fatal("Error apollod ListenAndServe: ", err)
 	}
 }
