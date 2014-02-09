@@ -56,13 +56,6 @@ func (s *S) TestSessionOrganizationShouldReturnAMongoCollection(c *gocheck.C) {
 	c.Assert(org, gocheck.DeepEquals, cOrg)
 }
 
-func (s *S) TestSessionTeamShouldReturnAMongoCollection(c *gocheck.C) {
-	var team *mgo.Collection
-	team = Session.Team()
-	cTeam := Session.DB.C("team")
-	c.Assert(team, gocheck.DeepEquals, cTeam)
-}
-
 func (s *S) TestSessionUserShouldReturnAMongoCollection(c *gocheck.C) {
 	var user *mgo.Collection
 	user = Session.User()

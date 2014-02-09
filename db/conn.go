@@ -56,11 +56,6 @@ func (s *session) Organization() *mgo.Collection {
 	return s.DB.C("organization")
 }
 
-// Team returns a reference to the "team" collection in MongoDB.
-func (s *session) Team() *mgo.Collection {
-	return s.DB.C("team")
-}
-
 // User returns a reference to the "user" collection in MongoDB.
 func (s *session) User() *mgo.Collection {
 	return s.DB.C("user")
