@@ -15,16 +15,20 @@ type S struct{}
 
 var _ = gocheck.Suite(&S{})
 
-type testWebHandler struct{}
-
-func (t testWebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	Web(w, r)
+type testWebHandler struct {
+	Key string
 }
 
-type testRunnerHandler struct{}
+func (t testWebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	Web(w, r, map[string]string{"apikey": t.Key})
+}
+
+type testRunnerHandler struct {
+	Key string
+}
 
 func (t testRunnerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	Runner(w, r)
+	Runner(w, r, map[string]string{"apikey": t.Key})
 }
 
 func httpToWs(u string) string {
@@ -32,7 +36,8 @@ func httpToWs(u string) string {
 }
 
 func (s *S) TestWebSocket(c *gocheck.C) {
-	srv := httptest.NewServer(testWebHandler{})
+	apiKey := "secret-key"
+	srv := httptest.NewServer(testWebHandler{apiKey})
 	defer srv.Close()
 	header := http.Header{"Origin": {srv.URL}}
 	_, _, err := websocket.DefaultDialer.Dial(httpToWs(srv.URL), header)
@@ -40,7 +45,8 @@ func (s *S) TestWebSocket(c *gocheck.C) {
 }
 
 func (s *S) TestRunnerSocket(c *gocheck.C) {
-	srv := httptest.NewServer(testRunnerHandler{})
+	apiKey := "secret-key"
+	srv := httptest.NewServer(testRunnerHandler{apiKey})
 	defer srv.Close()
 	header := http.Header{"Origin": {srv.URL}}
 	_, _, err := websocket.DefaultDialer.Dial(httpToWs(srv.URL), header)

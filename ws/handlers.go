@@ -1,32 +1,36 @@
 package ws
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
 )
 
-// Web handler websocket from web page side
-func Web(w http.ResponseWriter, r *http.Request) {
+// Web handler websocket for web side
+func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
+	apiKey := vars["apikey"]
 	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusInternalServerError)
+		msg := "Method not allowed"
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 	// TODO: FIX: "http://" used here! Maybe set "origin" option in /etc/apollo.conf
-	if origin := r.Header.Get("Origin"); origin != "http://"+r.Host {
+	/**if origin := r.Header.Get("Origin"); origin != "http://"+r.Host {
 		http.Error(w, "Origin not allowed", http.StatusForbidden)
 		return
-	}
+	}**/
 	ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
 	if _, ok := err.(websocket.HandshakeError); ok {
-		http.Error(w, "Not a websocket handshake", http.StatusBadRequest)
+		msg := "Not a websocket handshake"
+		http.Error(w, msg, http.StatusBadRequest)
 		return
 	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ws.Close()
-	/**for {
+	//ws.Close()
+	for {
 		messageType, p, err := ws.ReadMessage()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -36,25 +40,28 @@ func Web(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-	}**/
+	}
 }
 
-// Runner handler websocket from runner side
-func Runner(w http.ResponseWriter, r *http.Request) {
+// Runner handler websocket for runner side
+func Runner(w http.ResponseWriter, r *http.Request, vars map[string]string) {
+	apiKey := vars["apikey"]
 	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusInternalServerError)
+		msg := "Method not allowed"
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 	ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
 	if _, ok := err.(websocket.HandshakeError); ok {
-		http.Error(w, "Not a websocket handshake", http.StatusBadRequest)
+		msg := "Not a websocket handshake"
+		http.Error(w, msg, http.StatusBadRequest)
 		return
 	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ws.Close()
-	/**for {
+	//ws.Close()
+	for {
 		messageType, p, err := ws.ReadMessage()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -64,5 +71,5 @@ func Runner(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-	}**/
+	}
 }
