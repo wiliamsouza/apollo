@@ -1,0 +1,59 @@
+{
+	"ImportPath": "github.com/wiliamsouza/apollo",
+	"GoVersion": "go1.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go-uuid/uuid",
+			"Comment": "null-10",
+			"Rev": "5fac954758f5aa282478dc07fbb8709fe9575184"
+		},
+		{
+			"ImportPath": "code.google.com/p/go.crypto/bcrypt",
+			"Comment": "null-189",
+			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
+		},
+		{
+			"ImportPath": "code.google.com/p/go.crypto/blowfish",
+			"Comment": "null-189",
+			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
+		},
+		{
+			"ImportPath": "github.com/globocom/config",
+			"Rev": "caf5fe2f55dfaf63564a929bda3d722181e6d770"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "a08edd30ad9e104612741163dc087a613829a23c"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "9ede152210fa25c1377d33e867cb828c19316445"
+		},
+		{
+			"ImportPath": "github.com/gorilla/websocket",
+			"Rev": "92334662baa9cbebc2e6e68b8d56bc1233f85a4c"
+		},
+		{
+			"ImportPath": "github.com/howeyc/fsnotify",
+			"Rev": "effe075d9a3789af4908657b3a8e7a2de3c3b040"
+		},
+		{
+			"ImportPath": "labix.org/v2/mgo",
+			"Comment": "253",
+			"Rev": "gustavo@niemeyer.net-20131210224142-gtc8ap0sa0roxesc"
+		},
+		{
+			"ImportPath": "launchpad.net/gocheck",
+			"Comment": "85",
+			"Rev": "gustavo@niemeyer.net-20130302024745-6ikofwq2c03h7giu"
+		},
+		{
+			"ImportPath": "launchpad.net/goyaml",
+			"Comment": "50",
+			"Rev": "gustavo@niemeyer.net-20131114120802-abe042syx64z2m7s"
+		}
+	]
+}
