@@ -75,6 +75,21 @@ func (s *S) TestModifyOrganization(c *gocheck.C) {
 	c.Assert(orgDb, gocheck.DeepEquals, o2)
 }
 
+func (s *S) TestModifyOrganizationRemoveAllAdminsShouldReturnError(c *gocheck.C) {
+	result := "Can not remove all organization admins"
+	jhon := "jhon@doe.com"
+	jane := "jane@doe.com"
+	id := "jhoncorp"
+	t := Team{Name: "Test", Users: []string{jhon, jane}}
+	o1 := Organization{Name: id, Teams: []Team{t}, Admins: []string{jhon}}
+	o2 := Organization{Name: id, Teams: []Team{t}, Admins: []string{}}
+	_, err := NewOrganization(o1)
+	c.Assert(err, gocheck.IsNil)
+	defer db.Session.Organization().RemoveId(id)
+	err = ModifyOrganization(id, o2)
+	c.Assert(err.Error(), gocheck.Equals, result)
+}
+
 func (s *S) TestRemoveOrganization(c *gocheck.C) {
 	jhon := "jhon@doe.com"
 	jane := "jane@doe.com"

@@ -13,8 +13,8 @@ type Organization struct {
 }
 
 type Team struct {
-	Name  string
-	Users []string
+	Name  string   `json:"name" bson:"name"`
+	Users []string `json:"users" bson:"users"`
 }
 
 type OrganizationList []Organization
@@ -41,6 +41,9 @@ func DetailOrganization(name string) (Organization, error) {
 }
 
 func ModifyOrganization(name string, organization Organization) error {
+	if len(organization.Admins) == 0 {
+		return fmt.Errorf("Can not remove all organization admins")
+	}
 	err := db.Session.Organization().UpdateId(name, organization)
 	if err != nil {
 		return fmt.Errorf("Error updating organization: %s", err.Error())
