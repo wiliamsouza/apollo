@@ -16,9 +16,9 @@ import (
 
 const version = "0.0.1"
 
-type MuxHandler func(http.ResponseWriter, *http.Request, map[string]string)
+type muxHandler func(http.ResponseWriter, *http.Request, map[string]string)
 
-func (h MuxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h muxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	h(w, r, vars)
 }
@@ -49,11 +49,11 @@ func main() {
 	r.HandleFunc("/users", api.NewUser).Methods("POST")
 	r.HandleFunc("/organizations", api.NewOrganization).Methods("POST")
 	r.HandleFunc("/organizations", api.ListOrganizations).Methods("GET")
-	r.Handle("/organizations/{name}", MuxHandler(api.DetailOrganization)).Methods("GET")
-	r.Handle("/organizations/{name}", MuxHandler(api.ModifyOrganization)).Methods("PUT")
-	r.Handle("/organizations/{name}", MuxHandler(api.DeleteOrganization)).Methods("DELETE")
-	r.Handle("/ws/web/{apikey}", MuxHandler(ws.Web))
-	r.Handle("/ws/runner/{apikey}", MuxHandler(ws.Runner))
+	r.Handle("/organizations/{name}", muxHandler(api.DetailOrganization)).Methods("GET")
+	r.Handle("/organizations/{name}", muxHandler(api.ModifyOrganization)).Methods("PUT")
+	r.Handle("/organizations/{name}", muxHandler(api.DeleteOrganization)).Methods("DELETE")
+	r.Handle("/ws/web/{apikey}", muxHandler(ws.Web))
+	r.Handle("/ws/runner/{apikey}", muxHandler(ws.Runner))
 
 	http.Handle("/", r)
 
