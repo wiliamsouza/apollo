@@ -1,7 +1,6 @@
 package ws
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -12,7 +11,7 @@ import (
 // Web handler websocket for web side
 func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	APIKey := vars["apikey"]
-	u, err := customer.GetUserByAPIKey(APIKey)
+	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
 		msg := "Invalid APIKey, "
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
@@ -54,7 +53,7 @@ func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 // Runner handler websocket for runner side
 func Runner(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	APIKey := vars["apikey"]
-	u, err := customer.GetUserByAPIKey(APIKey)
+	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
 		msg := "Invalid APIKey, "
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
