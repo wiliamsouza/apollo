@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/globocom/config"
-	"labix.org/v2/mgo/bson"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/db"
@@ -29,26 +28,28 @@ func (s *S) TearDownSuite(c *gocheck.C) {
 
 func (s *S) TestNewUser(c *gocheck.C) {
 	email := "jhon@doe.com"
-	user, _ := NewUser("Jhon Doe", email, "12345")
-	defer db.Session.User().Remove(bson.M{"_id": email})
+	user, err := NewUser("Jhon Doe", email, "12345")
+	c.Assert(err, gocheck.IsNil)
+	defer db.Session.User().RemoveId(email)
 	var userDb User
-	_ = db.Session.User().Find(bson.M{"_id": email}).One(&userDb)
+	err = db.Session.User().FindId(email).One(&userDb)
+	c.Assert(err, gocheck.IsNil)
 	c.Assert(userDb.Name, gocheck.Equals, user.Name)
 	c.Assert(userDb.Email, gocheck.Equals, user.Email)
 	c.Assert(userDb.Password, gocheck.Equals, user.Password)
-	c.Assert(userDb.ApiKey, gocheck.Equals, user.ApiKey)
+	c.Assert(userDb.APIKey, gocheck.Equals, user.APIKey)
 }
 
 func (s *S) TestEncryptPassword(c *gocheck.C) {
 	password := `12345`
 	email := "jhon@doe.com"
 	user := &User{Name: "Jhon Doe", Email: email, Password: password}
-	defer db.Session.User().Remove(bson.M{"_id": email})
+	defer db.Session.User().RemoveId(email)
 	user.EncryptPassword()
 	c.Assert(password, gocheck.Not(gocheck.Equals), user.Password)
 }
 
-// TODO: How to test ApiKey token generation?
+// TODO: How to test APIKey token generation?
 
 func (s *S) TestValidateEmail(c *gocheck.C) {
 	var tests = []struct {
@@ -70,4 +71,14 @@ func (s *S) TestValidateEmail(c *gocheck.C) {
 			c.Errorf("Is %q valid? Want %v. Got %v.", t.input, t.expected, v)
 		}
 	}
+}
+
+func (s *S) TestGetUserByAPIKey(c *gocheck.C) {
+	email := "jhon@doe.com"
+	user, err := NewUser("Jhon Doe", email, "12345")
+	c.Assert(err, gocheck.IsNil)
+	defer db.Session.User().RemoveId(email)
+	userK, err := GetUserByAPIKey(user.APIKey)
+	c.Assert(err, gocheck.IsNil)
+	c.Assert(userK.APIKey, gocheck.DeepEquals, user.APIKey)
 }
