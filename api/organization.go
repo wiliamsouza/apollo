@@ -8,6 +8,7 @@ import (
 	"github.com/wiliamsouza/apollo/customer"
 )
 
+// NewOrganization create new organization
 func NewOrganization(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := ioutil.ReadAll(r.Body)
@@ -39,6 +40,7 @@ func NewOrganization(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+// ListOrganizations list organizations
 func ListOrganizations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	organizations, err := customer.ListOrganizations()
@@ -55,6 +57,7 @@ func ListOrganizations(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+// DetailOrganization detail organization
 func DetailOrganization(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	organization, err := customer.DetailOrganization(vars["name"])
@@ -71,6 +74,7 @@ func DetailOrganization(w http.ResponseWriter, r *http.Request, vars map[string]
 	w.Write(result)
 }
 
+// ModifyOrganization modify organization
 func ModifyOrganization(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -95,6 +99,7 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request, vars map[string]
 	w.WriteHeader(http.StatusOK)
 }
 
+// DeleteOrganization delete organization
 func DeleteOrganization(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	name := vars["name"]
 	err := customer.RemoveOrganization(name)

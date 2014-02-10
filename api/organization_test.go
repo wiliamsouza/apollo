@@ -229,7 +229,7 @@ func (s *S) TestModifyOrganizationRemoveOneAdmin(c *gocheck.C) {
 }
 
 func (s *S) TestModifyOrganizationRemoveAllAdminShouldReturnError(c *gocheck.C) {
-	result := "Error updating machine, Can not remove all organization admins\n"
+	result := "Error updating machine, can not remove all organization admins\n"
 	b := `{"name":"jhoncorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]},{"name":"Dev","users":["jane@doe.com","jhon@doe.com"]}],"admins":[]}`
 	body := strings.NewReader(b)
 	jhon := "jhon@doe.com"
@@ -276,7 +276,7 @@ func (s *S) TestDeleteOrganization(c *gocheck.C) {
 }
 
 func (s *S) TestDeleteOrganizationNoExist(c *gocheck.C) {
-	result := "Error deleting organization, Error removing organization: not found\n"
+	result := "Error deleting organization, error removing organization: not found\n"
 	jhon := "jhon@doe.com"
 	jane := "jane@doe.com"
 	name := "exist"
