@@ -5,11 +5,19 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+
+	"github.com/wiliamsouza/apollo/customer"
 )
 
 // Web handler websocket for web side
 func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
-	apiKey := vars["apikey"]
+	APIKey := vars["apikey"]
+	u, err := customer.GetUserByAPIKey(APIKey)
+	if err != nil {
+		msg := "Invalid APIKey, "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
+		return
+	}
 	if r.Method != "GET" {
 		msg := "Method not allowed"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -45,7 +53,13 @@ func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 
 // Runner handler websocket for runner side
 func Runner(w http.ResponseWriter, r *http.Request, vars map[string]string) {
-	apiKey := vars["apikey"]
+	APIKey := vars["apikey"]
+	u, err := customer.GetUserByAPIKey(APIKey)
+	if err != nil {
+		msg := "Invalid APIKey, "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
+		return
+	}
 	if r.Method != "GET" {
 		msg := "Method not allowed"
 		http.Error(w, msg, http.StatusInternalServerError)
