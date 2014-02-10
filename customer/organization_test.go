@@ -76,7 +76,7 @@ func (s *S) TestModifyOrganization(c *gocheck.C) {
 }
 
 func (s *S) TestModifyOrganizationRemoveAllAdminsShouldReturnError(c *gocheck.C) {
-	result := "Can not remove all organization admins"
+	result := "can not remove all organization admins"
 	jhon := "jhon@doe.com"
 	jane := "jane@doe.com"
 	id := "jhoncorp"
