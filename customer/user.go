@@ -30,7 +30,7 @@ func (u *User) ValidateEmail() (bool, error) {
 		panic(err)
 	}
 	if !m {
-		return false, errors.New("Validation Error: Email is not valid")
+		return false, errors.New("validation Error: Email is not valid")
 	}
 	return true, nil
 }
@@ -67,6 +67,7 @@ func NewUser(name, email, password string) (User, error) {
 	return u, nil
 }
 
+// GetUserByAPIKey find user by APIKey
 func GetUserByAPIKey(APIKey string) (User, error) {
 	var u User
 	err := db.Session.User().Find(bson.M{"apikey": APIKey}).One(&u)
