@@ -11,11 +11,13 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
+// Package represents GridFS file
 type Package struct {
 	Filename string   `json:"filename"`
 	Metadata Metadata `json:"metadata"`
 }
 
+// Metadata represents GridFS file metadata
 type Metadata struct {
 	Version     float32 `json:"version,omitempty"`
 	Description string  `json:"description"`
@@ -23,8 +25,10 @@ type Metadata struct {
 	Run         string  `json:"run,omitempty"`
 }
 
+// PackageList a list of packages
 type PackageList []Package
 
+// NewPackage create a new package
 func NewPackage(file, meta multipart.File, filename string) (Package, error) {
 	pkg := Package{}
 	gfs, err := db.Session.Package().Create(filename)
@@ -38,18 +42,21 @@ func NewPackage(file, meta multipart.File, filename string) (Package, error) {
 	return pkg, err
 }
 
+// ListPackages list packages
 func ListPackages() (PackageList, error) {
 	var packages []Package
 	err := db.Session.Package().Files.Find(nil).Select(bson.M{"filename": 1, "metadata.description": 1}).Sort("filename").All(&packages)
 	return PackageList(packages), err
 }
 
+// DetailPackage detail package
 func DetailPackage(filename string) (Package, error) {
 	var pkg Package
 	err := db.Session.Package().Files.Find(bson.M{"filename": filename}).One(&pkg)
 	return pkg, err
 }
 
+// GetPackage get a package
 func GetPackage(filename string) (*mgo.GridFile, error) {
 	file, err := db.Session.Package().Open(filename)
 	return file, err
