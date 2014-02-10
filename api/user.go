@@ -19,6 +19,7 @@ type responseUser struct {
 	Email string `json:"email"`
 }
 
+// NewUser create new user
 func NewUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := ioutil.ReadAll(r.Body)
