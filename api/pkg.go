@@ -10,6 +10,7 @@ import (
 	"github.com/wiliamsouza/apollo/pkg"
 )
 
+// ListPackages list packages
 func ListPackages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	packages, err := pkg.ListPackages()
@@ -26,6 +27,7 @@ func ListPackages(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+// UploadPackage upload package
 func UploadPackage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	pkgFile, pkgHeader, err := r.FormFile("package")
@@ -52,6 +54,7 @@ func UploadPackage(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+// DetailPackage detail package
 func DetailPackage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	filename := filepath.Base(r.URL.Path)
@@ -69,6 +72,7 @@ func DetailPackage(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+// DownloadPackage download package
 func DownloadPackage(w http.ResponseWriter, r *http.Request) {
 	filename := filepath.Base(r.URL.Path)
 	pkg, err := pkg.GetPackage(filename)
