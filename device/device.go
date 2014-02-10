@@ -1,5 +1,6 @@
 package device
 
+// Device holds info about mobile devices
 type Device struct {
 	Permission      Permissions
 	Owner           string
@@ -28,11 +29,13 @@ type Device struct {
 	Peripherals     string
 }
 
+// Permissions holds devices permission to organization and team
 type Permissions struct {
 	Organization Permission
 	Team         Permission
 }
 
+// Permission holds what type of permission a organization and team have
 type Permission struct {
 	Run     bool
 	Results bool
