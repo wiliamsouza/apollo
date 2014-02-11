@@ -36,18 +36,11 @@ func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//ws.Close()
-	for {
-		messageType, p, err := ws.ReadMessage()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		if err = ws.WriteMessage(messageType, p); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
+	conn := &wsConn{send: make(chan []byte, 256), ws: ws, APIKey: APIKey}
+	Bridge.registerWeb <- conn
+	defer func() { Bridge.unregisterWeb <- conn }()
+	go conn.writer()
+	conn.reader(Bridge.broadcastToRunner)
 }
 
 // Runner handler websocket for runner side
@@ -73,16 +66,9 @@ func Runner(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//ws.Close()
-	for {
-		messageType, p, err := ws.ReadMessage()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		if err = ws.WriteMessage(messageType, p); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
+	conn := &wsConn{send: make(chan []byte, 256), ws: ws, APIKey: APIKey}
+	Bridge.registerRunner <- conn
+	defer func() { Bridge.unregisterRunner <- conn }()
+	go conn.writer()
+	conn.reader(Bridge.broadcastToWeb)
 }

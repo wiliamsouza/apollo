@@ -41,6 +41,8 @@ func main() {
 
 	db.Connect()
 
+	go ws.Bridge.Run()
+
 	r := mux.NewRouter()
 	r.HandleFunc("/tests/packages", api.ListPackages).Methods("GET")
 	r.HandleFunc("/tests/packages", api.UploadPackage).Methods("POST")
