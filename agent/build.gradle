@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+version = '0.1'
+
+project.ext {
+    mainClass = 'com.github.wiliamsouza.apollo.Agent'
+}
+
+repositories {
+    mavenCentral()
+//    maven {
+//        url uri(ddmlibRepoDir)
+//    }
+}
+
+dependencies {
+    //compile group: 'com.android.tools.ddms', name: 'ddmlib', version: '22.4.0-SNAPSHOT'
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+    //compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.3.3'
+    //compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.1'
+    //compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.0'
+    //compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.1'
+    //compile group: 'org.json', name: 'json', version: '20090211'
+}
+
+jar {
+    from {configurations.compile.collect {zipTree(it)}}
+    manifest {
+        attributes('Implementation-Title': 'Apollo agent', 'Implementation-Version': version, 'Main-Class': project.mainClass)
+    }
+}
+
+task startAgent(dependsOn: 'classes', type: JavaExec) {
+    main = project.mainClass
+    classpath = sourceSets.main.runtimeClasspath
+}
