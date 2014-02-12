@@ -24,7 +24,7 @@ func (h muxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	configFile := flag.String("config", "/etc/apollo.conf", "Apollo daemon configuration file")
+	configFile := flag.String("config", "/etc/apollo/apollod.conf", "Apollo daemon configuration file")
 	gVersion := flag.Bool("version", false, "Print version and exit")
 
 	flag.Parse()
@@ -35,7 +35,7 @@ func main() {
 	}
 	err := config.ReadAndWatchConfigFile(*configFile)
 	if err != nil {
-		msg := `Could not find apollo config file. Searched on %s. For an example conf check /etc/apollo.conf file.\n %s`
+		msg := `Could not find apollo config file. Searched on %s. For an example conf check /etc/apollo/apollod.conf file.\n %s`
 		log.Panicf(msg, *configFile, err)
 	}
 
