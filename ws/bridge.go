@@ -61,6 +61,7 @@ var Bridge = bridge{
 	broadcastToRunner: make(chan *message),
 }
 
+// Run is used to coordinate all channel message exchange.
 func (b *bridge) Run() {
 	for {
 		select {
