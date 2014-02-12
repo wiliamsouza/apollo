@@ -16,11 +16,11 @@ Get the source code:
 Go to `bin` source directory and build the source:
 
     cd apollo/bin
-    go build apollo-webserver.go
+    go build apollod.go
 
 Start the webserver:
 
-    ./apollo-webserver -config ../etc/apollo-webserver.conf
+    ./apollod -config ../etc/apollod.conf
 
 Now you can test the API.
 
