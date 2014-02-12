@@ -12,3 +12,6 @@ data/fixture/local
 data/fixture/devices
 Godeps/Readme
 Godeps/_workspace/
+agent/.gradle/
+agent/.idea/
+agent/build/
