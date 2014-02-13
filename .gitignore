@@ -14,4 +14,7 @@ Godeps/Readme
 Godeps/_workspace/
 agent/.gradle/
 agent/.idea/
+agent/agent.iml
+agent/agent.ipr
+agent/agent.iws
 agent/build/
