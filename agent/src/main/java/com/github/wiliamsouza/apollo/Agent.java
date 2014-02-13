@@ -11,36 +11,36 @@ import org.apache.commons.cli.ParseException;
 
 public class Agent {
 
-	public static void main(String[] args) {
-		String config = "/etc/apollo/agent.conf";
-		CommandLine cmd;
+    public static void main(String[] args) {
+        String config = "/etc/apollo/agent.conf";
+        CommandLine cmd;
 
-		Option configFile  = OptionBuilder.withArgName("file")
-						  .hasArg()
-						  .withDescription("Apollo agent configuration file.")
-						  .create("config");
-		Options options = new Options();
-		options.addOption(configFile);
-		options.addOption("h", "help", false, "Print this message.");
+        Option configFile  = OptionBuilder.withArgName("file")
+                          .hasArg()
+                          .withDescription("Apollo agent configuration file.")
+                          .create("config");
+        Options options = new Options();
+        options.addOption(configFile);
+        options.addOption("h", "help", false, "Print this message.");
 
-		CommandLineParser parser = new BasicParser();
-		try {
-			cmd = parser.parse(options, args);
-			if (cmd.hasOption("help")) {
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("apollo", options);
-			}
-			String conf = cmd.getOptionValue("config");
-			if (conf != null) {
-				config = conf;
-			}
-		}
-		catch (ParseException e){
-			System.err.println("Option error: " + e.getMessage());
-		}
+        CommandLineParser parser = new BasicParser();
+        try {
+            cmd = parser.parse(options, args);
+            if (cmd.hasOption("help")) {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("apollo", options);
+            }
+            String conf = cmd.getOptionValue("config");
+            if (conf != null) {
+                config = conf;
+            }
+        }
+        catch (ParseException e){
+            System.err.println("Option error: " + e.getMessage());
+        }
 
-		DeviceMonitor monitor = new DeviceMonitor();
-		monitor.start();
+        DeviceMonitor monitor = new DeviceMonitor();
+        monitor.start();
         try {
             monitor.run();
         } catch (Exception e) {
@@ -48,7 +48,7 @@ public class Agent {
         }
         //monitor.finish();
 
-		System.out.println(config);
-		System.out.println("Apollo agent. \n");
-	}
+        System.out.println(config);
+        System.out.println("Apollo agent. \n");
+    }
 }
