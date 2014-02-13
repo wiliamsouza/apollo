@@ -37,28 +37,28 @@ func (conn *wsConn) writer() {
 }
 
 type connection struct {
-	webConn    []*wsConn
-	runnerConn []*wsConn
+	webConn   []*wsConn
+	agentConn []*wsConn
 }
 
 type bridge struct {
-	connections       map[string]*connection
-	registerWeb       chan *wsConn
-	unregisterWeb     chan *wsConn
-	registerRunner    chan *wsConn
-	unregisterRunner  chan *wsConn
-	broadcastToWeb    chan *message
-	broadcastToRunner chan *message
+	connections      map[string]*connection
+	registerWeb      chan *wsConn
+	unregisterWeb    chan *wsConn
+	registerAgent    chan *wsConn
+	unregisterAgent  chan *wsConn
+	broadcastToWeb   chan *message
+	broadcastToAgent chan *message
 }
 
 var Bridge = bridge{
-	connections:       make(map[string]*connection),
-	registerWeb:       make(chan *wsConn),
-	unregisterWeb:     make(chan *wsConn),
-	registerRunner:    make(chan *wsConn),
-	unregisterRunner:  make(chan *wsConn),
-	broadcastToWeb:    make(chan *message),
-	broadcastToRunner: make(chan *message),
+	connections:      make(map[string]*connection),
+	registerWeb:      make(chan *wsConn),
+	unregisterWeb:    make(chan *wsConn),
+	registerAgent:    make(chan *wsConn),
+	unregisterAgent:  make(chan *wsConn),
+	broadcastToWeb:   make(chan *message),
+	broadcastToAgent: make(chan *message),
 }
 
 // Run is used to coordinate all channel message exchange.
@@ -69,23 +69,23 @@ func (b *bridge) Run() {
 			if c, ok := b.connections[conn.APIKey]; ok {
 				c.webConn = append(c.webConn, conn)
 			} else {
-				c := &connection{webConn: []*wsConn{conn}, runnerConn: []*wsConn{}}
+				c := &connection{webConn: []*wsConn{conn}, agentConn: []*wsConn{}}
 				b.connections[conn.APIKey] = c
 			}
 		case conn := <-b.unregisterWeb:
 			_ = b.connections[conn.APIKey]
 			//delete(c.webConn, conn)
 			close(conn.send)
-		case conn := <-b.registerRunner:
+		case conn := <-b.registerAgent:
 			if c, ok := b.connections[conn.APIKey]; ok {
-				c.runnerConn = append(c.runnerConn, conn)
+				c.agentConn = append(c.agentConn, conn)
 			} else {
-				c := &connection{webConn: []*wsConn{}, runnerConn: []*wsConn{conn}}
+				c := &connection{webConn: []*wsConn{}, agentConn: []*wsConn{conn}}
 				b.connections[conn.APIKey] = c
 			}
-		case conn := <-b.unregisterRunner:
+		case conn := <-b.unregisterAgent:
 			_ = b.connections[conn.APIKey]
-			//delete(c.runnerConn, conn)
+			//delete(c.agentConn, conn)
 			close(conn.send)
 		case m := <-b.broadcastToWeb:
 			if c, ok := b.connections[m.APIKey]; ok {
@@ -99,9 +99,9 @@ func (b *bridge) Run() {
 					}
 				}
 			}
-		case m := <-b.broadcastToRunner:
+		case m := <-b.broadcastToAgent:
 			if c, ok := b.connections[m.APIKey]; ok {
-				for _, r := range c.runnerConn {
+				for _, r := range c.agentConn {
 					select {
 					case r.send <- m.msg:
 					default:

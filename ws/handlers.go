@@ -40,11 +40,11 @@ func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	Bridge.registerWeb <- conn
 	defer func() { Bridge.unregisterWeb <- conn }()
 	go conn.writer()
-	conn.reader(Bridge.broadcastToRunner)
+	conn.reader(Bridge.broadcastToAgent)
 }
 
-// Runner handler websocket for runner side
-func Runner(w http.ResponseWriter, r *http.Request, vars map[string]string) {
+// Agent handler websocket for agent side
+func Agent(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 	APIKey := vars["apikey"]
 	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
@@ -67,8 +67,8 @@ func Runner(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 		return
 	}
 	conn := &wsConn{send: make(chan []byte, 256), ws: ws, APIKey: APIKey}
-	Bridge.registerRunner <- conn
-	defer func() { Bridge.unregisterRunner <- conn }()
+	Bridge.registerAgent <- conn
+	defer func() { Bridge.unregisterAgent <- conn }()
 	go conn.writer()
 	conn.reader(Bridge.broadcastToWeb)
 }

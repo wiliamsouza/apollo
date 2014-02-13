@@ -55,7 +55,7 @@ func main() {
 	r.Handle("/organizations/{name}", muxHandler(api.ModifyOrganization)).Methods("PUT")
 	r.Handle("/organizations/{name}", muxHandler(api.DeleteOrganization)).Methods("DELETE")
 	r.Handle("/ws/web/{apikey}", muxHandler(ws.Web))
-	r.Handle("/ws/runner/{apikey}", muxHandler(ws.Runner))
+	r.Handle("/ws/agent/{apikey}", muxHandler(ws.Agent))
 
 	http.Handle("/", r)
 
