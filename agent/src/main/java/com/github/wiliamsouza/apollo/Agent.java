@@ -10,6 +10,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 
 public class Agent {
+
 	public static void main(String[] args) {
 		String config = "/etc/apollo/agent.conf";
 		CommandLine cmd;
@@ -37,6 +38,15 @@ public class Agent {
 		catch (ParseException e){
 			System.err.println("Option error: " + e.getMessage());
 		}
+
+		DeviceMonitor monitor = new DeviceMonitor();
+		monitor.start();
+        try {
+            monitor.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //monitor.finish();
 
 		System.out.println(config);
 		System.out.println("Apollo agent. \n");
