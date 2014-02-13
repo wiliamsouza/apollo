@@ -11,7 +11,7 @@ import org.apache.commons.cli.ParseException;
 
 public class Agent {
 	public static void main(String[] args) {
-		String config = null;
+		String config = "/etc/apollo/agent.conf";
 		CommandLine cmd;
 
 		Option configFile  = OptionBuilder.withArgName("file")
@@ -25,18 +25,17 @@ public class Agent {
 		CommandLineParser parser = new BasicParser();
 		try {
 			cmd = parser.parse(options, args);
-		 	config = cmd.getOptionValue("config");
 			if (cmd.hasOption("help")) {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("apollo", options);
 			}
+			String conf = cmd.getOptionValue("config");
+			if (conf != null) {
+				config = conf;
+			}
 		}
 		catch (ParseException e){
 			System.err.println("Option error: " + e.getMessage());
-		}
-
-		if (config == null) {
-			config = "/etc/apollo/agent.conf";
 		}
 
 		System.out.println(config);
