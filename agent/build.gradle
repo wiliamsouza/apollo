@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'findbugs'
 
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
@@ -31,6 +32,15 @@ jar {
     from {configurations.compile.collect {zipTree(it)}}
     manifest {
         attributes('Implementation-Title': 'Apollo agent', 'Implementation-Version': version, 'Main-Class': project.mainClass)
+    }
+}
+
+tasks.withType(FindBugs) {
+    effort = "max"
+    reportLevel = "high"
+    reports {
+        xml.enabled = false
+        html.enabled = true
     }
 }
 
