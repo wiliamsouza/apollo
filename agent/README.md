@@ -50,3 +50,21 @@ gradle check
 ```
 
 It will run `FindBugs` and generate a report inside `build/reports/findbugs/main.html`
+
+udev rules
+----------
+
+Apollo agent ships with an intial udev rules `agent/etc/udev/rules.d/51-android.rules`
+it sets device group to `plugdev` and change the mode to `0666`.
+
+To reload rules run:
+
+```
+udevadm control --reload-rules
+```
+
+To monitor run:
+
+```
+udevadm monitor --environment --udev
+```
