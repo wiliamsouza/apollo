@@ -57,7 +57,7 @@ It will return a list of `packages`:
 
 ```
 [{"filename":"package1.tgz","metadata":{"description":"Package1 ON/OFF test"}}]
-``'
+```
 
 Detailing `package`:
 
