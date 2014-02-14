@@ -15,7 +15,7 @@ public class Agent {
         String config = "/etc/apollo/agent.conf";
         CommandLine cmd;
 
-        Option configFile  = OptionBuilder.withArgName("file")
+        Option configFile = OptionBuilder.withArgName("file")
                           .hasArg()
                           .withDescription("Apollo agent configuration file.")
                           .create("config");
@@ -41,14 +41,12 @@ public class Agent {
 
         DeviceMonitor monitor = new DeviceMonitor();
         monitor.start();
-        try {
-            monitor.run();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //monitor.finish();
 
         System.out.println(config);
         System.out.println("Apollo agent. \n");
+
+        while (true) {
+        }
     }
 }
