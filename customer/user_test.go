@@ -16,7 +16,7 @@ type S struct{}
 var _ = gocheck.Suite(&S{})
 
 func (s *S) SetUpSuite(c *gocheck.C) {
-	err := config.ReadConfigFile("../etc/apollo.conf")
+	err := config.ReadConfigFile("../etc/apollod.conf")
 	c.Check(err, gocheck.IsNil)
 	config.Set("database:name", "apollo_customer_tests")
 	db.Connect()
@@ -81,4 +81,17 @@ func (s *S) TestGetUserByAPIKey(c *gocheck.C) {
 	userK, err := GetUserByAPIKey(user.APIKey)
 	c.Assert(err, gocheck.IsNil)
 	c.Assert(userK.APIKey, gocheck.DeepEquals, user.APIKey)
+}
+
+func (s *S) TestDetailUser(c *gocheck.C) {
+	email := "jhon@doe.com"
+	user, err := NewUser("Jhon Doe", email, "12345")
+	c.Assert(err, gocheck.IsNil)
+	defer db.Session.User().RemoveId(email)
+	userDb, err := DetailUser(email)
+	c.Assert(err, gocheck.IsNil)
+	c.Assert(userDb.Name, gocheck.Equals, user.Name)
+	c.Assert(userDb.Email, gocheck.Equals, user.Email)
+	c.Assert(userDb.Password, gocheck.Equals, user.Password)
+	c.Assert(userDb.APIKey, gocheck.Equals, user.APIKey)
 }

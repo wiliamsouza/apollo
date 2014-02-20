@@ -76,3 +76,11 @@ func GetUserByAPIKey(APIKey string) (User, error) {
 	}
 	return u, nil
 }
+
+// Detailuser detail user
+func DetailUser(email string) (User, error) {
+	var user User
+	err := db.Session.User().FindId(email).One(&user)
+	return user, err
+
+}
