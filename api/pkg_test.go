@@ -22,7 +22,7 @@ type S struct{}
 var _ = gocheck.Suite(&S{})
 
 func (s *S) SetUpSuite(c *gocheck.C) {
-	err := config.ReadConfigFile("../etc/apollo.conf")
+	err := config.ReadConfigFile("../etc/apollod.conf")
 	c.Assert(err, gocheck.IsNil)
 	config.Set("database:url", "127.0.0.1:27017")
 	config.Set("database:name", "apollo_api_tests")
