@@ -45,12 +45,14 @@ func ListOrganizations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	organizations, err := customer.ListOrganizations()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := "Error getting organization list: "
+		http.Error(w, msg+err.Error(), http.StatusNotFound)
 		return
 	}
 	result, err := json.Marshal(&organizations)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := "Error generating json result: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -62,12 +64,14 @@ func DetailOrganization(w http.ResponseWriter, r *http.Request, vars map[string]
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	organization, err := customer.DetailOrganization(vars["name"])
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		msg := "Error getting organization detail: "
+		http.Error(w, msg+err.Error(), http.StatusNotFound)
 		return
 	}
 	result, err := json.Marshal(&organization)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		msg := "Error generating json result: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
