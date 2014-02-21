@@ -61,10 +61,16 @@ func NewUser(name, email, password string) (User, error) {
 	u.EncryptPassword()
 	u.Created = time.Now()
 	u.GenerateAPIKey()
-	if err := db.Session.User().Insert(&u); err != nil {
+	err = db.Session.User().Insert(&u)
+	if err != nil {
 		return u, err
 	}
-	return u, nil
+	var user User
+	err = db.Session.User().FindId(email).One(&user)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }
 
 // GetUserByAPIKey find user by APIKey
