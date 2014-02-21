@@ -27,12 +27,12 @@ The above command will download and install project dependencies.
 First you need build `bin/apollo-webserver.go` before start test server:
 
 ```
-go build ../bin/apollo-webserver.go
+go build ../bin/apollod.go
 ```
 Start RESTful server.
 
 ``` 
-../bin/apollo-webserver -config ../etc/apollo.conf &
+../bin/apollod -config ../etc/apollod.conf &
 ```
 
 Start web api test server:

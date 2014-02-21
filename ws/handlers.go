@@ -22,7 +22,7 @@ func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
-	// TODO: FIX: "http://" used here! Maybe set "origin" option in /etc/apollo.conf
+	// TODO: FIX: "http://" used here! Maybe set "origin" option in /etc/apollos.conf
 	/**if origin := r.Header.Get("Origin"); origin != "http://"+r.Host {
 		http.Error(w, "Origin not allowed", http.StatusForbidden)
 		return
