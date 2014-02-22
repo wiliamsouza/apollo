@@ -49,6 +49,16 @@ func (s *S) TestEncryptPassword(c *gocheck.C) {
 	c.Assert(password, gocheck.Not(gocheck.Equals), user.Password)
 }
 
+func (s *S) TestValidatePassword(c *gocheck.C) {
+	password := `12345`
+	email := "jhon@doe.com"
+	user := &User{Name: "Jhon Doe", Email: email, Password: password}
+	defer db.Session.User().RemoveId(email)
+	user.EncryptPassword()
+	err := user.ValidatePassword(password)
+	c.Assert(err, gocheck.IsNil)
+}
+
 // TODO: How to test APIKey token generation?
 
 func (s *S) TestValidateEmail(c *gocheck.C) {
