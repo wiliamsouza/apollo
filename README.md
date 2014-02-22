@@ -94,6 +94,17 @@ It will return `user` name and email:
 {"name":"Jhon Doe","email":"jhon@doe.com"}
 ```
 
+Authenticate `user`:
+
+```
+curl -v --header "Content-Type: application/json" --request POST --data '{"email":"jhon@doe.com","password":"12345"}' http://localhost:8000/users/authenticate
+```
+It will return a JWT(JSON Web Token) `token`:
+
+```
+{"token":"cCI6IkpXVCJCI6Impob25AZG9lLmNvbSIsImV4cCI6MTM5MzMxODU0OH0ZLoU"}
+```
+
 Detail `user`:
 
 ```
