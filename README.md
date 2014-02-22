@@ -94,6 +94,17 @@ It will return `user` name and email:
 {"name":"Jhon Doe","email":"jhon@doe.com"}
 ```
 
+Detail `user`:
+
+```
+curl -v --header "Content-Type: application/json" --request GET http://localhost:8000/users/jhon@doe.com
+```
+It will return `user` details:
+
+```
+{"name":"Jhon Doe","email":"jhon@doe.com","apikey":"0Yy00ZDRhLThmNmQt...","created":"2014-02-22T00:20:44.511-03:00","lastlogin":"0001-01-01T00:00:00Z"}
+```
+
 Organization API
 ----------------
 

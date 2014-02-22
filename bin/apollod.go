@@ -49,6 +49,7 @@ func main() {
 	r.HandleFunc("/tests/packages/{filename}", api.DetailPackage).Methods("GET")
 	r.HandleFunc("/tests/packages/downloads/{filename}", api.DownloadPackage).Methods("GET")
 	r.HandleFunc("/users", api.NewUser).Methods("POST")
+	r.Handle("/users/{email}", muxHandler(api.DetailUser)).Methods("GET")
 	r.HandleFunc("/organizations", api.NewOrganization).Methods("POST")
 	r.HandleFunc("/organizations", api.ListOrganizations).Methods("GET")
 	r.Handle("/organizations/{name}", muxHandler(api.DetailOrganization)).Methods("GET")
