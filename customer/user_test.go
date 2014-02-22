@@ -95,3 +95,13 @@ func (s *S) TestDetailUser(c *gocheck.C) {
 	c.Assert(userDb.Password, gocheck.Equals, user.Password)
 	c.Assert(userDb.APIKey, gocheck.Equals, user.APIKey)
 }
+
+func (s *S) TestGetUserByEmail(c *gocheck.C) {
+	email := "jhon@doe.com"
+	user, err := NewUser("Jhon Doe", email, "12345")
+	c.Assert(err, gocheck.IsNil)
+	defer db.Session.User().RemoveId(email)
+	userE, err := GetUserByEmail(user.Email)
+	c.Assert(err, gocheck.IsNil)
+	c.Assert(userE.Email, gocheck.DeepEquals, user.Email)
+}

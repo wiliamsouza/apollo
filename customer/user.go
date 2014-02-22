@@ -37,7 +37,8 @@ func (u *User) ValidateEmail() (bool, error) {
 
 // EncryptPassword before store on DB encrypt user password
 func (u *User) EncryptPassword() {
-	if passwd, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.MinCost); err == nil {
+	if passwd, err := bcrypt.GenerateFromPassword([]byte(u.Password),
+		bcrypt.MinCost); err == nil {
 		u.Password = string(passwd)
 	}
 }
@@ -77,6 +78,16 @@ func NewUser(name, email, password string) (User, error) {
 func GetUserByAPIKey(APIKey string) (User, error) {
 	var u User
 	err := db.Session.User().Find(bson.M{"apikey": APIKey}).One(&u)
+	if err != nil {
+		return u, err
+	}
+	return u, nil
+}
+
+// GetUserByEmail find user by Email
+func GetUserByEmail(email string) (User, error) {
+	var u User
+	err := db.Session.User().FindId(email).One(&u)
 	if err != nil {
 		return u, err
 	}
