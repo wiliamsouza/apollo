@@ -21,6 +21,10 @@
 			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
 		},
 		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Rev": "f80fd39457122ccbaf05ac1881b7f3a0a7fbcbf3"
+		},
+		{
 			"ImportPath": "github.com/globocom/config",
 			"Rev": "caf5fe2f55dfaf63564a929bda3d722181e6d770"
 		},
