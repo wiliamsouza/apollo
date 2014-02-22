@@ -24,7 +24,8 @@ func (h muxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	configFile := flag.String("config", "/etc/apollo/apollod.conf", "Apollo daemon configuration file")
+	configFile := flag.String("config", "/etc/apollo/apollod.conf",
+		"Apollo daemon configuration file")
 	gVersion := flag.Bool("version", false, "Print version and exit")
 
 	flag.Parse()
@@ -35,7 +36,7 @@ func main() {
 	}
 	err := config.ReadAndWatchConfigFile(*configFile)
 	if err != nil {
-		msg := `Could not find apollo config file. Searched on %s. For an example conf check /etc/apollo/apollod.conf file.\n %s`
+		msg := `Could not find apollod config file.`
 		log.Panicf(msg, *configFile, err)
 	}
 
@@ -46,15 +47,21 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/tests/packages", api.ListPackages).Methods("GET")
 	r.HandleFunc("/tests/packages", api.UploadPackage).Methods("POST")
-	r.HandleFunc("/tests/packages/{filename}", api.DetailPackage).Methods("GET")
-	r.HandleFunc("/tests/packages/downloads/{filename}", api.DownloadPackage).Methods("GET")
+	r.HandleFunc("/tests/packages/{filename}",
+		api.DetailPackage).Methods("GET")
+	r.HandleFunc("/tests/packages/downloads/{filename}",
+		api.DownloadPackage).Methods("GET")
 	r.HandleFunc("/users", api.NewUser).Methods("POST")
 	r.Handle("/users/{email}", muxHandler(api.DetailUser)).Methods("GET")
+	r.HandleFunc("/users/authenticate", api.Authenticate).Methods("POST")
 	r.HandleFunc("/organizations", api.NewOrganization).Methods("POST")
 	r.HandleFunc("/organizations", api.ListOrganizations).Methods("GET")
-	r.Handle("/organizations/{name}", muxHandler(api.DetailOrganization)).Methods("GET")
-	r.Handle("/organizations/{name}", muxHandler(api.ModifyOrganization)).Methods("PUT")
-	r.Handle("/organizations/{name}", muxHandler(api.DeleteOrganization)).Methods("DELETE")
+	r.Handle("/organizations/{name}",
+		muxHandler(api.DetailOrganization)).Methods("GET")
+	r.Handle("/organizations/{name}",
+		muxHandler(api.ModifyOrganization)).Methods("PUT")
+	r.Handle("/organizations/{name}",
+		muxHandler(api.DeleteOrganization)).Methods("DELETE")
 	r.Handle("/ws/web/{apikey}", muxHandler(ws.Web))
 	r.Handle("/ws/agent/{apikey}", muxHandler(ws.Agent))
 
