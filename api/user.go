@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+
 	"github.com/wiliamsouza/apollo/customer"
 )
 
@@ -20,6 +22,15 @@ type responseUser struct {
 	Email string `json:"email"`
 }
 
+type responseToken struct {
+	Token string `json:"token"`
+}
+
+type authenticateUser struct {
+	Email    string
+	Password string
+}
+
 type detailUser struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
@@ -30,27 +41,31 @@ type detailUser struct {
 
 // NewUser create new user
 func NewUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Error parssing request body: "+err.Error(), http.StatusInternalServerError)
+		msg := "Error parssing request body: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	var u requestUser
 	err = json.Unmarshal(b, &u)
 	if err != nil {
-		http.Error(w, "Error parssing json request: "+err.Error(), http.StatusBadRequest)
+		msg := "Error parssing json request: "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
 	newUser, err := customer.NewUser(u.Name, u.Email, u.Password)
 	if err != nil {
-		http.Error(w, "Error creating new user: "+err.Error(), http.StatusBadRequest)
+		msg := "Error creating new user: "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
 	user := responseUser{Name: newUser.Name, Email: newUser.Email}
 	result, err := json.Marshal(&user)
 	if err != nil {
-		http.Error(w, "Error generating json result: "+err.Error(), http.StatusInternalServerError)
+		msg := "Error generating json result: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -62,13 +77,65 @@ func DetailUser(w http.ResponseWriter, r *http.Request, vars map[string]string) 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	user, err := customer.DetailUser(vars["email"])
 	if err != nil {
-		http.Error(w, "Error getting user detail: "+err.Error(), http.StatusNotFound)
+		msg := "Error getting user detail: "
+		http.Error(w, msg+err.Error(), http.StatusNotFound)
 		return
 	}
-	response := detailUser{Name: user.Name, Email: user.Email, APIKey: user.APIKey, Created: user.Created, LastLogin: user.LastLogin}
+	response := detailUser{Name: user.Name, Email: user.Email,
+		APIKey: user.APIKey, Created: user.Created,
+		LastLogin: user.LastLogin}
 	result, err := json.Marshal(&response)
 	if err != nil {
-		http.Error(w, "Error generating json result: "+err.Error(), http.StatusInternalServerError)
+		msg := "Error generating json result: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(result)
+}
+
+// Authenticate user using email and password and issue a JSON Web Token
+func Authenticate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		msg := "Error parssing request body: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	var u authenticateUser
+	err = json.Unmarshal(b, &u)
+	if err != nil {
+		msg := "Error parssing json request: "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
+		return
+	}
+	user, err := customer.GetUserByEmail(u.Email)
+	if err != nil {
+		msg := "Error user not found: "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = user.ValidatePassword(u.Password)
+	if err != nil {
+		msg := "Error invalid password: "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
+		return
+	}
+	token := jwt.New(jwt.GetSigningMethod("HS256"))
+	token.Claims["email"] = user.Email
+	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	tokenString, err := token.SignedString([]byte("super-secret-key"))
+	if err != nil {
+		msg := "Error generating token: "
+		http.Error(w, msg+err.Error(), http.StatusBadRequest)
+		return
+	}
+	t := responseToken{Token: tokenString}
+	result, err := json.Marshal(&t)
+	if err != nil {
+		msg := "Error generating json result: "
+		http.Error(w, msg+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

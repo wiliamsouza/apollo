@@ -25,17 +25,20 @@ func (s *S) TestNewUser(c *gocheck.C) {
 	NewUser(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
 	ct := response.HeaderMap["Content-Type"][0]
-	c.Assert(ct, gocheck.Equals, "application/json")
+	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
 	c.Assert(response.Body.String(), gocheck.Equals, result)
 }
 
 func (s *S) TestDetailUser(c *gocheck.C) {
 	email := "jhon@doe.com"
 	user, err := customer.NewUser("Jhon Doe", email, "12345")
-	detail := detailUser{Name: user.Name, Email: user.Email, APIKey: user.APIKey, Created: user.Created, LastLogin: user.LastLogin}
+	defer db.Session.User().RemoveId(email)
+	c.Assert(err, gocheck.IsNil)
+	detail := detailUser{Name: user.Name, Email: user.Email,
+		APIKey: user.APIKey, Created: user.Created,
+		LastLogin: user.LastLogin}
 	result, err := json.Marshal(&detail)
 	c.Assert(err, gocheck.IsNil)
-	defer db.Session.User().RemoveId(email)
 	url := fmt.Sprintf("users/%s", email)
 	request, err := http.NewRequest("GET", url, nil)
 	c.Assert(err, gocheck.IsNil)
@@ -45,4 +48,20 @@ func (s *S) TestDetailUser(c *gocheck.C) {
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
 	c.Assert(response.Body.String(), gocheck.Equals, string(result))
+}
+
+func (s *S) TestAuthenticate(c *gocheck.C) {
+	email := "jhon@doe.com"
+	_, err := customer.NewUser("Jhon Doe", email, "12345")
+	defer db.Session.User().RemoveId(email)
+	c.Assert(err, gocheck.IsNil)
+	body := strings.NewReader(`{"email":"jhon@doe.com","password":"12345"}`)
+	request, err := http.NewRequest("POST", "users/authenticate", body)
+	c.Assert(err, gocheck.IsNil)
+	request.Header.Set("Content-Type", "application/json")
+	response := httptest.NewRecorder()
+	Authenticate(response, request)
+	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
+	ct := response.HeaderMap["Content-Type"][0]
+	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
 }
