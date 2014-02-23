@@ -43,7 +43,7 @@ func (s *S) TestDetailUser(c *gocheck.C) {
 	request, err := http.NewRequest("GET", url, nil)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DetailUser(response, request, map[string]string{"email": email})
+	DetailUser(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")

@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-
 	"github.com/wiliamsouza/apollo/customer"
+	"github.com/wiliamsouza/apollo/token"
 )
 
 type requestUser struct {
@@ -73,9 +73,10 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DetailUser detail user
-func DetailUser(w http.ResponseWriter, r *http.Request, vars map[string]string) {
+func DetailUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	user, err := customer.DetailUser(vars["email"])
+	email := filepath.Base(r.URL.Path)
+	user, err := customer.DetailUser(email)
 	if err != nil {
 		msg := "Error getting user detail: "
 		http.Error(w, msg+err.Error(), http.StatusNotFound)
@@ -122,16 +123,13 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
-	token := jwt.New(jwt.GetSigningMethod("HS256"))
-	token.Claims["email"] = user.Email
-	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	tokenString, err := token.SignedString([]byte("super-secret-key"))
+	newToken, err := token.New(user.Email)
 	if err != nil {
 		msg := "Error generating token: "
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
-	t := responseToken{Token: tokenString}
+	t := responseToken{Token: newToken}
 	result, err := json.Marshal(&t)
 	if err != nil {
 		msg := "Error generating json result: "
