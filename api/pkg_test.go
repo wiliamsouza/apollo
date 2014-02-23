@@ -10,9 +10,10 @@ import (
 	"testing"
 
 	"github.com/globocom/config"
+	"launchpad.net/gocheck"
+
 	"github.com/wiliamsouza/apollo/db"
 	"github.com/wiliamsouza/apollo/pkg"
-	"launchpad.net/gocheck"
 )
 
 func Test(t *testing.T) { gocheck.TestingT(t) }
@@ -27,7 +28,6 @@ func (s *S) SetUpSuite(c *gocheck.C) {
 	config.Set("database:url", "127.0.0.1:27017")
 	config.Set("database:name", "apollo_api_tests")
 	db.Connect()
-	c.Assert(err, gocheck.IsNil)
 }
 
 func (s *S) TearDownSuite(c *gocheck.C) {
@@ -99,8 +99,8 @@ func (s *S) TestDetailPackage(c *gocheck.C) {
 	response := httptest.NewRecorder()
 	DetailPackage(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
-	//ct := response.HeaderMap["Content-Type"][0]
-	//c.Assert(ct, gocheck.Equals, "application/json")
+	ct := response.HeaderMap["Content-Type"][0]
+	c.Assert(ct, gocheck.Equals, "application/json")
 	c.Assert(response.Body.String(), gocheck.Equals, results)
 
 }
