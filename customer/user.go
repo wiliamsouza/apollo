@@ -30,16 +30,17 @@ func (u *User) ValidateEmail() (bool, error) {
 		panic(err)
 	}
 	if !m {
-		return false, errors.New("Validation error: Email is not valid")
+		return false, errors.New("validation error: email is not valid")
 	}
 	return true, nil
 }
 
+// ValidatePassword check if password is valid
 func (u *User) ValidatePassword(password string) error {
 	if bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil {
 		return nil
 	}
-	return errors.New("Validation error: Invalid password")
+	return errors.New("validation error: invalid password")
 }
 
 // EncryptPassword before store on DB encrypt user password
@@ -101,7 +102,7 @@ func GetUserByEmail(email string) (User, error) {
 	return u, nil
 }
 
-// Detailuser detail user
+// DetailUser detail user
 func DetailUser(email string) (User, error) {
 	var user User
 	err := db.Session.User().FindId(email).One(&user)

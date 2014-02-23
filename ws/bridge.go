@@ -51,6 +51,7 @@ type bridge struct {
 	broadcastToAgent chan *message
 }
 
+// Bridge store connections on both sides
 var Bridge = bridge{
 	connections:      make(map[string]*connection),
 	registerWeb:      make(chan *wsConn),
