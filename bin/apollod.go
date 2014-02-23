@@ -6,21 +6,28 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/globocom/config"
 	"github.com/gorilla/mux"
 
 	"github.com/wiliamsouza/apollo/api"
 	"github.com/wiliamsouza/apollo/db"
+	"github.com/wiliamsouza/apollo/token"
 	"github.com/wiliamsouza/apollo/ws"
 )
 
 const version = "0.0.1"
 
-type muxHandler func(http.ResponseWriter, *http.Request, map[string]string)
+type authNHandler func(http.ResponseWriter, *http.Request, *jwt.Token)
 
-func (h muxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	h(w, r, vars)
+func (h authNHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	token, err := token.Validate(r)
+	if err != nil {
+		msg := "Error not authorized: "
+		http.Error(w, msg+err.Error(), http.StatusUnauthorized)
+		return
+	}
+	h(w, r, token)
 }
 
 func main() {
@@ -40,6 +47,8 @@ func main() {
 		log.Panicf(msg, *configFile, err)
 	}
 
+	token.LoadKeys()
+
 	db.Connect()
 
 	go ws.Bridge.Run()
@@ -52,18 +61,15 @@ func main() {
 	r.HandleFunc("/tests/packages/downloads/{filename}",
 		api.DownloadPackage).Methods("GET")
 	r.HandleFunc("/users", api.NewUser).Methods("POST")
-	r.Handle("/users/{email}", muxHandler(api.DetailUser)).Methods("GET")
+	r.HandleFunc("/users/{email}", api.DetailUser).Methods("GET")
 	r.HandleFunc("/users/authenticate", api.Authenticate).Methods("POST")
 	r.HandleFunc("/organizations", api.NewOrganization).Methods("POST")
 	r.HandleFunc("/organizations", api.ListOrganizations).Methods("GET")
-	r.Handle("/organizations/{name}",
-		muxHandler(api.DetailOrganization)).Methods("GET")
-	r.Handle("/organizations/{name}",
-		muxHandler(api.ModifyOrganization)).Methods("PUT")
-	r.Handle("/organizations/{name}",
-		muxHandler(api.DeleteOrganization)).Methods("DELETE")
-	r.Handle("/ws/web/{apikey}", muxHandler(ws.Web))
-	r.Handle("/ws/agent/{apikey}", muxHandler(ws.Agent))
+	r.HandleFunc("/organizations/{name}", api.DetailOrganization).Methods("GET")
+	r.HandleFunc("/organizations/{name}", api.ModifyOrganization).Methods("PUT")
+	r.HandleFunc("/organizations/{name}", api.DeleteOrganization).Methods("DELETE")
+	r.HandleFunc("/ws/web/{apikey}", ws.Web)
+	r.HandleFunc("/ws/agent/{apikey}", ws.Agent)
 
 	http.Handle("/", r)
 
