@@ -1,7 +1,7 @@
 package ws
 
 import (
-	"net/http"
+	//"net/http"
 	//"net/http/httptest"
 	"testing"
 
@@ -14,22 +14,6 @@ func Test(t *testing.T) { gocheck.TestingT(t) }
 type S struct{}
 
 var _ = gocheck.Suite(&S{})
-
-type testWebHandler struct {
-	Key string
-}
-
-func (t testWebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	Web(w, r, map[string]string{"apikey": t.Key})
-}
-
-type testAgentHandler struct {
-	Key string
-}
-
-func (t testAgentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	Agent(w, r, map[string]string{"apikey": t.Key})
-}
 
 func httpToWs(u string) string {
 	return "ws" + u[len("http"):]

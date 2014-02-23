@@ -2,6 +2,7 @@ package ws
 
 import (
 	"net/http"
+	"path/filepath"
 
 	"github.com/gorilla/websocket"
 
@@ -9,8 +10,8 @@ import (
 )
 
 // Web handler websocket for web side
-func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
-	APIKey := vars["apikey"]
+func Web(w http.ResponseWriter, r *http.Request) {
+	APIKey := filepath.Base(r.URL.Path)
 	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
 		msg := "Invalid APIKey, "
@@ -44,8 +45,8 @@ func Web(w http.ResponseWriter, r *http.Request, vars map[string]string) {
 }
 
 // Agent handler websocket for agent side
-func Agent(w http.ResponseWriter, r *http.Request, vars map[string]string) {
-	APIKey := vars["apikey"]
+func Agent(w http.ResponseWriter, r *http.Request) {
+	APIKey := filepath.Base(r.URL.Path)
 	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
 		msg := "Invalid APIKey, "
