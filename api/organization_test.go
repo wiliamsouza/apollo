@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	//"labix.org/v2/mgo/bson"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/customer"
@@ -83,7 +82,7 @@ func (s *S) TestDetailOrganization(c *gocheck.C) {
 	request, err := http.NewRequest("GET", url, nil)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DetailOrganization(response, request, map[string]string{"name": name})
+	DetailOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
@@ -109,7 +108,7 @@ func (s *S) TestModifyOrganization(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, map[string]string{"name": name})
+	ModifyOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -136,7 +135,7 @@ func (s *S) TestModifyOrganizationAddNewTeamAndAdmins(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, map[string]string{"name": name})
+	ModifyOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -164,7 +163,7 @@ func (s *S) TestModifyOrganizationRemoveAllTeam(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, map[string]string{"name": name})
+	ModifyOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -192,7 +191,7 @@ func (s *S) TestModifyOrganizationRemoveOneTeamOneTeamUser(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, map[string]string{"name": name})
+	ModifyOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -220,7 +219,7 @@ func (s *S) TestModifyOrganizationRemoveOneAdmin(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, map[string]string{"name": name})
+	ModifyOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -249,7 +248,7 @@ func (s *S) TestModifyOrganizationRemoveAllAdminShouldReturnError(c *gocheck.C) 
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, map[string]string{"name": name})
+	ModifyOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusBadRequest)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "text/plain; charset=utf-8")
@@ -268,7 +267,7 @@ func (s *S) TestDeleteOrganization(c *gocheck.C) {
 	request, err := http.NewRequest("DELETE", url, nil)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteOrganization(response, request, map[string]string{"name": name})
+	DeleteOrganization(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	lenght, err := db.Session.Organization().FindId(name).Count()
 	c.Assert(err, gocheck.IsNil)
@@ -289,7 +288,7 @@ func (s *S) TestDeleteOrganizationNoExist(c *gocheck.C) {
 	request, err := http.NewRequest("DELETE", url, nil)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteOrganization(response, request, map[string]string{"name": "noexist"})
+	DeleteOrganization(response, request)
 	lenght, err := db.Session.Organization().FindId(name).Count()
 	c.Assert(err, gocheck.IsNil)
 	c.Assert(lenght, gocheck.Equals, 1)

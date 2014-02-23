@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"path/filepath"
 
 	"github.com/wiliamsouza/apollo/customer"
 )
@@ -60,9 +61,10 @@ func ListOrganizations(w http.ResponseWriter, r *http.Request) {
 }
 
 // DetailOrganization detail organization
-func DetailOrganization(w http.ResponseWriter, r *http.Request, vars map[string]string) {
+func DetailOrganization(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	organization, err := customer.DetailOrganization(vars["name"])
+	name := filepath.Base(r.URL.Path)
+	organization, err := customer.DetailOrganization(name)
 	if err != nil {
 		msg := "Error getting organization detail: "
 		http.Error(w, msg+err.Error(), http.StatusNotFound)
@@ -79,7 +81,7 @@ func DetailOrganization(w http.ResponseWriter, r *http.Request, vars map[string]
 }
 
 // ModifyOrganization modify organization
-func ModifyOrganization(w http.ResponseWriter, r *http.Request, vars map[string]string) {
+func ModifyOrganization(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "Error parssing request body, "
@@ -93,7 +95,7 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request, vars map[string]
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
-	name := vars["name"]
+	name := filepath.Base(r.URL.Path)
 	err = customer.ModifyOrganization(name, o)
 	if err != nil {
 		msg := "Error updating machine, "
@@ -104,8 +106,8 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request, vars map[string]
 }
 
 // DeleteOrganization delete organization
-func DeleteOrganization(w http.ResponseWriter, r *http.Request, vars map[string]string) {
-	name := vars["name"]
+func DeleteOrganization(w http.ResponseWriter, r *http.Request) {
+	name := filepath.Base(r.URL.Path)
 	err := customer.RemoveOrganization(name)
 	if err != nil {
 		http.Error(w, "Error deleting organization, "+err.Error(), http.StatusBadRequest)
