@@ -39,55 +39,6 @@ rsa:
 
 Now you can test the API.
 
-Package API
------------
-
-Uploading a `package`:
-
-```
-curl -vv --request POST --form package=@package1.tgz --form metadata=@metadata1.json http://localhost:8000/tests/packages
-```
-
-The `data` directory contains some files to test.
-
-It will return basic information about `package`:
-
-```
-{"filename":"package1.tgz","metadata":{"description":"Package1 ON/OFF test"}}
-```
-
-Listing `packages`:
-
-```
-curl -vv --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages
-```
-
-It will return a list of `packages`:
-
-```
-[{"filename":"package1.tgz","metadata":{"description":"Package1 ON/OFF test"}}]
-```
-
-Detailing `package`:
-
-```
-curl -vv --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages/package1.tgz
-```
-
-It will return `package` detail:
-
-```
-{"filename":"package1.tgz","metadata":{"version":0.1,"description":"Package1 ON/OFF test","install":"adb push dist/package1.jar /data/local/tmp/","run":"adb shell uiautomator runtest package1.jar -c com.github.wiliamsouza.package1.Package1Test"}}
-```
-
-Downloading `package`:
-
-```
-curl -vv -X GET http://localhost:8000/tests/packages/downloads/package1.tgz -o package.tgz
-```
-
-It will download `package`.
-
 User API
 --------
 
@@ -120,7 +71,7 @@ From now you should add and `Authorization` header like:
 --header "Authorization: Bearer <token>"
 ```
 
-<token> is the one returned by `users/authenticate`.
+`<token>` is the one returned by `users/authenticate`.
 
 Detail `user`:
 
@@ -133,13 +84,62 @@ It will return `user` details:
 {"name":"Jhon Doe","email":"jhon@doe.com","apikey":"0Yy00ZDRhLThmNmQt...","created":"2014-02-22T00:20:44.511-03:00","lastlogin":"0001-01-01T00:00:00Z"}
 ```
 
+Package API
+-----------
+
+Uploading a `package`:
+
+```
+curl -vv --header "Authorization: Bearer <token>"  --request POST --form package=@package1.tgz --form metadata=@metadata1.json http://localhost:8000/tests/packages
+```
+
+The `data` directory contains some files to test.
+
+It will return basic information about `package`:
+
+```
+{"filename":"package1.tgz","metadata":{"description":"Package1 ON/OFF test"}}
+```
+
+Listing `packages`:
+
+```
+curl -vv --header "Authorization: Bearer <token>"  --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages
+```
+
+It will return a list of `packages`:
+
+```
+[{"filename":"package1.tgz","metadata":{"description":"Package1 ON/OFF test"}}]
+```
+
+Detailing `package`:
+
+```
+curl -vv --header "Authorization: Bearer <token>"  --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages/package1.tgz
+```
+
+It will return `package` detail:
+
+```
+{"filename":"package1.tgz","metadata":{"version":0.1,"description":"Package1 ON/OFF test","install":"adb push dist/package1.jar /data/local/tmp/","run":"adb shell uiautomator runtest package1.jar -c com.github.wiliamsouza.package1.Package1Test"}}
+```
+
+Downloading `package`:
+
+```
+curl -vv --header "Authorization: Bearer <token>"  -X GET http://localhost:8000/tests/packages/downloads/package1.tgz -o package.tgz
+```
+
+It will download `package`.
+
 Organization API
 ----------------
 
 Adding a new `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}' http://localhost:8000/organizations
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}' http://localhost:8000/organizations
 ```
 
 It will return:
@@ -151,7 +151,7 @@ It will return:
 List `organizations`:
 
 ```
-curl -vv --header "Content-Type: application/json" --request GET http://localhost:8000/organizations
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request GET http://localhost:8000/organizations
 ```
 
 It will return:
@@ -163,7 +163,7 @@ It will return:
 Detail `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --request GET http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request GET http://localhost:8000/organizations/doecorp
 ```
 
 It will return:
@@ -175,7 +175,7 @@ It will return:
 Update `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
 ```
 
 Update is used to simulate teams and admins deletion, change and addtion.
@@ -183,7 +183,7 @@ Update is used to simulate teams and admins deletion, change and addtion.
 Delete:
 
 ```
-curl -vv --header "Content-Type: application/json" --request DELETE http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request DELETE http://localhost:8000/organizations/doecorp
 ```
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wiliamsouza/apollo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
