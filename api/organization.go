@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/dgrijalva/jwt-go"
+
 	"github.com/wiliamsouza/apollo/customer"
 )
 
 // NewOrganization create new organization
-func NewOrganization(w http.ResponseWriter, r *http.Request) {
+func NewOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -42,7 +44,7 @@ func NewOrganization(w http.ResponseWriter, r *http.Request) {
 }
 
 // ListOrganizations list organizations
-func ListOrganizations(w http.ResponseWriter, r *http.Request) {
+func ListOrganizations(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	organizations, err := customer.ListOrganizations()
 	if err != nil {
@@ -61,7 +63,7 @@ func ListOrganizations(w http.ResponseWriter, r *http.Request) {
 }
 
 // DetailOrganization detail organization
-func DetailOrganization(w http.ResponseWriter, r *http.Request) {
+func DetailOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	name := filepath.Base(r.URL.Path)
 	organization, err := customer.DetailOrganization(name)
@@ -81,7 +83,7 @@ func DetailOrganization(w http.ResponseWriter, r *http.Request) {
 }
 
 // ModifyOrganization modify organization
-func ModifyOrganization(w http.ResponseWriter, r *http.Request) {
+func ModifyOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "Error parssing request body, "
@@ -106,7 +108,7 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteOrganization delete organization
-func DeleteOrganization(w http.ResponseWriter, r *http.Request) {
+func DeleteOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	name := filepath.Base(r.URL.Path)
 	err := customer.RemoveOrganization(name)
 	if err != nil {
