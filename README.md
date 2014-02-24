@@ -24,6 +24,15 @@ go build apollod.go
 
 Start the webserver:
  
+The only configuration that need to be adjusted is keys path
+the following example set the path to a test keys.
+
+```
+rsa:
+  private: "../data/keys/rsa"
+  public: "../data/keys/rsa.pub"
+```
+
 ```
 ./apollod -config ../etc/apollod.conf
 ```
@@ -105,10 +114,18 @@ It will return a JWT(JSON Web Token) `token`:
 {"token":"cCI6IkpXVCJCI6Impob25AZG9lLmNvbSIsImV4cCI6MTM5MzMxODU0OH0ZLoU"}
 ```
 
+From now you should add and `Authorization` header like:
+
+```
+--header "Authorization: Bearer <token>"
+```
+
+<token> is the one returned by `users/authenticate`.
+
 Detail `user`:
 
 ```
-curl -v --header "Content-Type: application/json" --request GET http://localhost:8000/users/jhon@doe.com
+curl -v --header "Content-Type: application/json" --header "Authorization: Bearer <token>" --request GET http://localhost:8000/users/jhon@doe.com
 ```
 It will return `user` details:
 
