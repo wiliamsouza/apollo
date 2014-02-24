@@ -54,20 +54,25 @@ func main() {
 	go ws.Bridge.Run()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/tests/packages", api.ListPackages).Methods("GET")
-	r.HandleFunc("/tests/packages", api.UploadPackage).Methods("POST")
-	r.HandleFunc("/tests/packages/{filename}",
-		api.DetailPackage).Methods("GET")
-	r.HandleFunc("/tests/packages/downloads/{filename}",
-		api.DownloadPackage).Methods("GET")
+	r.Handle("/tests/packages", authNHandler(api.ListPackages)).Methods("GET")
+	r.Handle("/tests/packages", authNHandler(api.UploadPackage)).Methods("POST")
+	r.Handle("/tests/packages/{filename}",
+		authNHandler(api.DetailPackage)).Methods("GET")
+	r.Handle("/tests/packages/downloads/{filename}",
+		authNHandler(api.DownloadPackage)).Methods("GET")
 	r.HandleFunc("/users", api.NewUser).Methods("POST")
 	r.Handle("/users/{email}", authNHandler(api.DetailUser)).Methods("GET")
 	r.HandleFunc("/users/authenticate", api.Authenticate).Methods("POST")
-	r.HandleFunc("/organizations", api.NewOrganization).Methods("POST")
-	r.HandleFunc("/organizations", api.ListOrganizations).Methods("GET")
-	r.HandleFunc("/organizations/{name}", api.DetailOrganization).Methods("GET")
-	r.HandleFunc("/organizations/{name}", api.ModifyOrganization).Methods("PUT")
-	r.HandleFunc("/organizations/{name}", api.DeleteOrganization).Methods("DELETE")
+	r.Handle("/organizations",
+		authNHandler(api.NewOrganization)).Methods("POST")
+	r.Handle("/organizations",
+		authNHandler(api.ListOrganizations)).Methods("GET")
+	r.Handle("/organizations/{name}",
+		authNHandler(api.DetailOrganization)).Methods("GET")
+	r.Handle("/organizations/{name}",
+		authNHandler(api.ModifyOrganization)).Methods("PUT")
+	r.Handle("/organizations/{name}",
+		authNHandler(api.DeleteOrganization)).Methods("DELETE")
 	r.HandleFunc("/ws/web/{apikey}", ws.Web)
 	r.HandleFunc("/ws/agent/{apikey}", ws.Agent)
 
