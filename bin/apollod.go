@@ -61,7 +61,7 @@ func main() {
 	r.HandleFunc("/tests/packages/downloads/{filename}",
 		api.DownloadPackage).Methods("GET")
 	r.HandleFunc("/users", api.NewUser).Methods("POST")
-	r.HandleFunc("/users/{email}", api.DetailUser).Methods("GET")
+	r.Handle("/users/{email}", authNHandler(api.DetailUser)).Methods("GET")
 	r.HandleFunc("/users/authenticate", api.Authenticate).Methods("POST")
 	r.HandleFunc("/organizations", api.NewOrganization).Methods("POST")
 	r.HandleFunc("/organizations", api.ListOrganizations).Methods("GET")

@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+
 	"github.com/wiliamsouza/apollo/customer"
 	"github.com/wiliamsouza/apollo/token"
 )
@@ -73,9 +75,14 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DetailUser detail user
-func DetailUser(w http.ResponseWriter, r *http.Request) {
+func DetailUser(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	email := filepath.Base(r.URL.Path)
+	if email != token.Claims["email"] {
+		msg := "Error getting user detail other user: "
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
 	user, err := customer.DetailUser(email)
 	if err != nil {
 		msg := "Error getting user detail: "

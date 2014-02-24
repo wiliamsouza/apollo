@@ -12,6 +12,7 @@ import (
 
 	"github.com/wiliamsouza/apollo/customer"
 	"github.com/wiliamsouza/apollo/db"
+	"github.com/wiliamsouza/apollo/token"
 )
 
 func (s *S) TestNewUser(c *gocheck.C) {
@@ -39,11 +40,16 @@ func (s *S) TestDetailUser(c *gocheck.C) {
 		LastLogin: user.LastLogin}
 	result, err := json.Marshal(&detail)
 	c.Assert(err, gocheck.IsNil)
+	token.LoadKeys()
+	t, err := token.New(email)
 	url := fmt.Sprintf("users/%s", email)
 	request, err := http.NewRequest("GET", url, nil)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
+	c.Assert(err, gocheck.IsNil)
+	tk, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DetailUser(response, request)
+	DetailUser(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
