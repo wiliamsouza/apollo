@@ -7,11 +7,13 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/dgrijalva/jwt-go"
+
 	"github.com/wiliamsouza/apollo/pkg"
 )
 
 // ListPackages list packages
-func ListPackages(w http.ResponseWriter, r *http.Request) {
+func ListPackages(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json")
 	packages, err := pkg.ListPackages()
 	if err != nil {
@@ -28,7 +30,7 @@ func ListPackages(w http.ResponseWriter, r *http.Request) {
 }
 
 // UploadPackage upload package
-func UploadPackage(w http.ResponseWriter, r *http.Request) {
+func UploadPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json")
 	pkgFile, pkgHeader, err := r.FormFile("package")
 	if err != nil {
@@ -55,7 +57,7 @@ func UploadPackage(w http.ResponseWriter, r *http.Request) {
 }
 
 // DetailPackage detail package
-func DetailPackage(w http.ResponseWriter, r *http.Request) {
+func DetailPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	w.Header().Set("Content-Type", "application/json")
 	filename := filepath.Base(r.URL.Path)
 	pkg, err := pkg.DetailPackage(filename)
@@ -73,7 +75,7 @@ func DetailPackage(w http.ResponseWriter, r *http.Request) {
 }
 
 // DownloadPackage download package
-func DownloadPackage(w http.ResponseWriter, r *http.Request) {
+func DownloadPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	filename := filepath.Base(r.URL.Path)
 	pkg, err := pkg.GetPackage(filename)
 	if err != nil {
