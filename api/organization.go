@@ -29,7 +29,7 @@ func NewOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 	}
 	newOrganization, err := customer.NewOrganization(o)
 	if err != nil {
-		msg := "Error creating new machine, "
+		msg := "Error creating new organization, "
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -100,7 +100,7 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token
 	name := filepath.Base(r.URL.Path)
 	err = customer.ModifyOrganization(name, o)
 	if err != nil {
-		msg := "Error updating machine, "
+		msg := "Error updating organization, "
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
