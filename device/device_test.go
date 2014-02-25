@@ -18,7 +18,7 @@ var _ = gocheck.Suite(&S{})
 func (s *S) SetUpSuite(c *gocheck.C) {
 	err := config.ReadConfigFile("../etc/apollod.conf")
 	c.Check(err, gocheck.IsNil)
-	config.Set("database:name", "apollo_customer_tests")
+	config.Set("database:name", "apollo_device_tests")
 	db.Connect()
 }
 
