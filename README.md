@@ -65,18 +65,19 @@ It will return a JWT(JSON Web Token) `token`:
 {"token":"cCI6IkpXVCJCI6Impob25AZG9lLmNvbSIsImV4cCI6MTM5MzMxODU0OH0ZLoU"}
 ```
 
-From now you should add and `Authorization` header like:
+From now you should set an environment variable `$TOKEN` it will be used through this doc:
 
 ```
---header "Authorization: Bearer <token>"
+export TOKEN=<token>
 ```
 
 `<token>` is the one returned by `users/authenticate`.
 
+
 Detail `user`:
 
 ```
-curl -v --header "Content-Type: application/json" --header "Authorization: Bearer <token>" --request GET http://localhost:8000/users/jhon@doe.com
+curl -v --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request GET http://localhost:8000/users/jhon@doe.com
 ```
 It will return `user` details:
 
@@ -90,7 +91,7 @@ Package API
 Uploading a `package`:
 
 ```
-curl -vv --header "Authorization: Bearer <token>"  --request POST --form package=@package1.tgz --form metadata=@metadata1.json http://localhost:8000/tests/packages
+curl -vv --header "Authorization: Bearer $TOKEN"  --request POST --form package=@package1.tgz --form metadata=@metadata1.json http://localhost:8000/tests/packages
 ```
 
 The `data` directory contains some files to test.
@@ -104,7 +105,7 @@ It will return basic information about `package`:
 Listing `packages`:
 
 ```
-curl -vv --header "Authorization: Bearer <token>"  --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages
+curl -vv --header "Authorization: Bearer $TOKEN"  --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages
 ```
 
 It will return a list of `packages`:
@@ -116,7 +117,7 @@ It will return a list of `packages`:
 Detailing `package`:
 
 ```
-curl -vv --header "Authorization: Bearer <token>"  --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages/package1.tgz
+curl -vv --header "Authorization: Bearer $TOKEN"  --header "Content-Type: application/json" -X GET http://localhost:8000/tests/packages/package1.tgz
 ```
 
 It will return `package` detail:
@@ -128,7 +129,7 @@ It will return `package` detail:
 Downloading `package`:
 
 ```
-curl -vv --header "Authorization: Bearer <token>"  -X GET http://localhost:8000/tests/packages/downloads/package1.tgz -o package.tgz
+curl -vv --header "Authorization: Bearer $TOKEN"  -X GET http://localhost:8000/tests/packages/downloads/package1.tgz -o package.tgz
 ```
 
 It will download `package`.
@@ -139,7 +140,7 @@ Organization API
 Adding a new `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}' http://localhost:8000/organizations
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}' http://localhost:8000/organizations
 ```
 
 It will return:
@@ -151,7 +152,7 @@ It will return:
 List `organizations`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request GET http://localhost:8000/organizations
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request GET http://localhost:8000/organizations
 ```
 
 It will return:
@@ -163,7 +164,7 @@ It will return:
 Detail `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request GET http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request GET http://localhost:8000/organizations/doecorp
 ```
 
 It will return:
@@ -175,7 +176,7 @@ It will return:
 Update `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
 ```
 
 Update is used to simulate teams and admins deletion, change and addtion.
@@ -183,7 +184,60 @@ Update is used to simulate teams and admins deletion, change and addtion.
 Delete:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer <token>"  --request DELETE http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request DELETE http://localhost:8000/organizations/doecorp
+```
+
+Device API
+----------
+
+Adding a new device:
+
+```
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request POST --data '{"codename":"a700","permission":{"organization":{"run":false,"result":false,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}' http://localhost:8000/devices
+```
+
+It will return:
+
+```
+{"codename":"a700","permission":{"organization":{"run":false,"result":false,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}
+```
+
+List `devices`:
+
+```
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request GET http://localhost:8000/devices
+```
+
+It will return:
+
+```
+[{"codename":"a700","permission":{"organization":{"run":false,"result":false,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}]
+```
+
+Detail `device`:
+
+```
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request GET http://localhost:8000/devices/a700
+```
+
+It will return:
+
+```
+{"codename":"a700","permission":{"organization":{"run":false,"result":false,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}
+```
+
+Update `device`:
+
+```
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request PUT --data '{"codename":"a700","permission":{"organization":{"run":true,"result":true,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"jhon@doe.com","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}' http://localhost:8000/devices/a700
+```
+
+Update is used to simulate teams and admins deletion, change and addtion.
+
+Delete:
+
+```
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN"  --request DELETE http://localhost:8000/devices/a700
 ```
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wiliamsouza/apollo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

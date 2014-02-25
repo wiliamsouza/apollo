@@ -54,8 +54,10 @@ func main() {
 	go ws.Bridge.Run()
 
 	r := mux.NewRouter()
-	r.Handle("/tests/packages", authNHandler(api.ListPackages)).Methods("GET")
-	r.Handle("/tests/packages", authNHandler(api.UploadPackage)).Methods("POST")
+	r.Handle("/tests/packages",
+		authNHandler(api.ListPackages)).Methods("GET")
+	r.Handle("/tests/packages",
+		authNHandler(api.UploadPackage)).Methods("POST")
 	r.Handle("/tests/packages/{filename}",
 		authNHandler(api.DetailPackage)).Methods("GET")
 	r.Handle("/tests/packages/downloads/{filename}",
@@ -73,6 +75,14 @@ func main() {
 		authNHandler(api.ModifyOrganization)).Methods("PUT")
 	r.Handle("/organizations/{name}",
 		authNHandler(api.DeleteOrganization)).Methods("DELETE")
+	r.Handle("/devices", authNHandler(api.NewDevice)).Methods("POST")
+	r.Handle("/devices", authNHandler(api.ListDevices)).Methods("GET")
+	r.Handle("/devices/{codename}",
+		authNHandler(api.DetailDevice)).Methods("GET")
+	r.Handle("/devices/{codename}",
+		authNHandler(api.ModifyDevice)).Methods("PUT")
+	r.Handle("/devices/{codename}",
+		authNHandler(api.DeleteDevice)).Methods("DELETE")
 	r.HandleFunc("/ws/web/{apikey}", ws.Web)
 	r.HandleFunc("/ws/agent/{apikey}", ws.Agent)
 
