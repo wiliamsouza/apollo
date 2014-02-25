@@ -103,5 +103,4 @@ func (s *S) TestRemoveOrganization(c *gocheck.C) {
 	lenght, err := db.Session.Organization().FindId(org.Name).Count()
 	c.Assert(err, gocheck.IsNil)
 	c.Assert(lenght, gocheck.Equals, 0)
-
 }

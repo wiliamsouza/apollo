@@ -35,7 +35,6 @@ func ListOrganizations() (OrganizationList, error) {
 	var organizations []Organization
 	err := db.Session.Organization().Find(nil).Sort("_id").All(&organizations)
 	return OrganizationList(organizations), err
-
 }
 
 // DetailOrganization detail organization
@@ -43,7 +42,6 @@ func DetailOrganization(name string) (Organization, error) {
 	var organization Organization
 	err := db.Session.Organization().FindId(name).One(&organization)
 	return organization, err
-
 }
 
 // ModifyOrganization modify organization
