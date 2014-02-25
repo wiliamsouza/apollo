@@ -22,7 +22,7 @@ type Device struct {
 	Ram             string      `json:"ram" bson:"ram"`
 	Weight          string      `json:"weight" bson:"weight"`
 	Dimensions      string      `json:"dimensions" bson:"dimentions"`
-	ScreenDimension string      `json:"screenDimenion" bson:"screenDimention"`
+	ScreenDimension string      `json:"screenDimension" bson:"screenDimension"`
 	Resolution      string      `json:"resolution" bson:"resolution"`
 	ScreenDensity   string      `json:"screenDensity" bson:"screenDensity"`
 	InternalStorage string      `json:"internalStorage" bson:"internalStorage"`
