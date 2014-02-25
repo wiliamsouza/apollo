@@ -46,11 +46,6 @@ func (s *session) Cicle() *mgo.Collection {
 	return s.DB.C("cicle")
 }
 
-// Case returns a reference to the "case" collection in MongoDB.
-func (s *session) Case() *mgo.Collection {
-	return s.DB.C("case")
-}
-
 // Organization returns a reference to the "organization" collection in MongoDB.
 func (s *session) Organization() *mgo.Collection {
 	return s.DB.C("organization")
