@@ -83,6 +83,12 @@ func main() {
 		authNHandler(api.ModifyDevice)).Methods("PUT")
 	r.Handle("/devices/{codename}",
 		authNHandler(api.DeleteDevice)).Methods("DELETE")
+	r.Handle("/tests", authNHandler(api.NewCicle)).Methods("POST")
+	r.Handle("/tests", authNHandler(api.ListCicles)).Methods("GET")
+	r.Handle("/tests/{id}", authNHandler(api.DetailCicle)).Methods("GET")
+	r.Handle("/tests/{id}", authNHandler(api.ModifyCicle)).Methods("PUT")
+	r.Handle("/tests/{id}",
+		authNHandler(api.DeleteCicle)).Methods("DELETE")
 	r.HandleFunc("/ws/web/{apikey}", ws.Web)
 	r.HandleFunc("/ws/agent/{apikey}", ws.Agent)
 
