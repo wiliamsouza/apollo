@@ -6,7 +6,7 @@
 package db
 
 import (
-	"github.com/globocom/config"
+	"github.com/tsuru/config"
 	"labix.org/v2/mgo"
 )
 

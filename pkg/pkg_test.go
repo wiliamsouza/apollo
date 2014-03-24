@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/globocom/config"
+	"github.com/tsuru/config"
 	"github.com/wiliamsouza/apollo/db"
 	"labix.org/v2/mgo/bson"
 	"launchpad.net/gocheck"

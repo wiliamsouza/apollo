@@ -3,7 +3,7 @@ package token
 import (
 	"io/ioutil"
 
-	"github.com/globocom/config"
+	"github.com/tsuru/config"
 )
 
 var (

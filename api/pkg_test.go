@@ -10,7 +10,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/globocom/config"
+	"github.com/tsuru/config"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/db"
