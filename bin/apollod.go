@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/globocom/config"
 	"github.com/gorilla/mux"
+	"github.com/tsuru/config"
 
 	"github.com/wiliamsouza/apollo/api"
 	"github.com/wiliamsouza/apollo/db"

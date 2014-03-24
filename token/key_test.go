@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/globocom/config"
+	"github.com/tsuru/config"
 
 	"launchpad.net/gocheck"
 )
