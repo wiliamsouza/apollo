@@ -42,13 +42,6 @@ func (s *S) TestSessionCicleShouldReturnAMongoCollection(c *gocheck.C) {
 	c.Assert(cicle, gocheck.DeepEquals, cCicle)
 }
 
-func (s *S) TestSessionCaseShouldReturnAMongoCollection(c *gocheck.C) {
-	var ccase *mgo.Collection
-	ccase = Session.Case()
-	cCase := Session.DB.C("case")
-	c.Assert(ccase, gocheck.DeepEquals, cCase)
-}
-
 func (s *S) TestSessionOrganizationShouldReturnAMongoCollection(c *gocheck.C) {
 	var org *mgo.Collection
 	org = Session.Organization()
