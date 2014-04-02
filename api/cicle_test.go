@@ -17,7 +17,7 @@ import (
 func (s *S) TestNewCicle(c *gocheck.C) {
 	// It returns Id too we remove it cause we can't predict before hand what it will be
 	b := `{"name":"Test maguro","device":"maguro","packages":["bluetooth.jar","wifi.jar"]}`
-	defer db.Session.Device().DropCollection()
+	defer db.Session.Cicle().DropCollection()
 	body := strings.NewReader(b)
 	request, err := http.NewRequest("POST", "cicles", body)
 	c.Assert(err, gocheck.IsNil)
