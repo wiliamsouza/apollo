@@ -46,4 +46,5 @@ for info in soup.find_all('span', class_='device'):
 
 with open('devices.json', 'w') as f:
     f.write(json.dumps(devices))
+
 print("Saved {0} devices specification".format(len(devices)))
