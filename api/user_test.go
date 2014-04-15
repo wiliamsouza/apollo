@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/go-martini/martini"
 	"labix.org/v2/mgo/bson"
 	"launchpad.net/gocheck"
 
@@ -46,10 +47,14 @@ func (s *S) TestDetailUser(c *gocheck.C) {
 	t, err := token.New(email)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	c.Assert(err, gocheck.IsNil)
+	p := make(map[string]string)
+	p["email"] = email
+	params := martini.Params(p)
 	response := httptest.NewRecorder()
-	DetailUser(response, request, tk)
+	DetailUser(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")

@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"path/filepath"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/go-martini/martini"
 
 	"github.com/wiliamsouza/apollo/customer"
 	"github.com/wiliamsouza/apollo/token"
@@ -75,10 +74,10 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DetailUser detail user
-func DetailUser(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func DetailUser(w http.ResponseWriter, r *http.Request, t *token.Token, p martini.Params) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	email := filepath.Base(r.URL.Path)
-	if email != token.Claims["email"] {
+	email := p["email"]
+	if email != t.Email {
 		msg := "Error getting user detail other user: "
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
