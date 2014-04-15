@@ -2,16 +2,16 @@ package ws
 
 import (
 	"net/http"
-	"path/filepath"
 
+	"github.com/go-martini/martini"
 	"github.com/gorilla/websocket"
 
 	"github.com/wiliamsouza/apollo/customer"
 )
 
 // Web handler websocket for web side
-func Web(w http.ResponseWriter, r *http.Request) {
-	APIKey := filepath.Base(r.URL.Path)
+func Web(w http.ResponseWriter, r *http.Request, p martini.Params) {
+	APIKey := p["apikey"]
 	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
 		msg := "Invalid APIKey, "
@@ -45,8 +45,8 @@ func Web(w http.ResponseWriter, r *http.Request) {
 }
 
 // Agent handler websocket for agent side
-func Agent(w http.ResponseWriter, r *http.Request) {
-	APIKey := filepath.Base(r.URL.Path)
+func Agent(w http.ResponseWriter, r *http.Request, p martini.Params) {
+	APIKey := p["apikey"]
 	_, err := customer.GetUserByAPIKey(APIKey)
 	if err != nil {
 		msg := "Invalid APIKey, "
