@@ -7,6 +7,12 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// Token is thin layer to jwt.Token and is used to be inject
+type Token struct {
+	Email string
+	Exp   float64
+}
+
 // New generate a JWT token in string format
 func New(email string) (string, error) {
 	t := jwt.New(jwt.GetSigningMethod("HS256"))
