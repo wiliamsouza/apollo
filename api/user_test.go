@@ -48,8 +48,8 @@ func (s *S) TestDetailUser(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
 	tt, err := token.Validate(request)
-	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	c.Assert(err, gocheck.IsNil)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	p := make(map[string]string)
 	p["email"] = email
 	params := martini.Params(p)

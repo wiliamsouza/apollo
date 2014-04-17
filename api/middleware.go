@@ -3,50 +3,20 @@ package api
 import (
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/go-martini/martini"
 
 	"github.com/wiliamsouza/apollo/token"
 )
 
-// AuthNHandleFunc handle jwt token authentication.
-type AuthNHandleFunc func(http.ResponseWriter, *http.Request, *jwt.Token)
-
-func (h AuthNHandleFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	token, err := token.Validate(r)
-	if err != nil {
-		msg := "Error not authorized: "
-		http.Error(w, msg+err.Error(), http.StatusUnauthorized)
-		return
+// AuthN handle json jwt token authentication and inject a token intance on the request.
+func AuthN() martini.Handler {
+	return func(res http.ResponseWriter, req *http.Request, context martini.Context) {
+		t, err := token.Validate(req)
+		tk := &token.Token{Email: t.Claims["email"].(string), Exp: t.Claims["exp"].(float64)}
+		context.Map(tk)
+		if err != nil {
+			msg := "Error not authorized: "
+			http.Error(res, msg+err.Error(), http.StatusUnauthorized)
+		}
 	}
-	h(w, r, token)
-}
-
-// CORS Cross-Origin Resource Sharing.
-type CORS struct {
-	handler http.Handler
-}
-
-// CORSHandle handle Cross-Origin Resource Sharing.
-func CORSHandle(handler http.Handler) *CORS {
-	return &CORS{handler: handler}
-}
-
-func (s *CORS) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// TODO: Get allow origin list from apollod.conf
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	s.handler.ServeHTTP(w, r)
-}
-
-// PreFlightHandleFunc handle browser preflight OPTIONS requests.
-type PreFlightHandleFunc func(http.ResponseWriter, *http.Request)
-
-func (h PreFlightHandleFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "OPTIONS" {
-		h(w, r)
-		return
-	}
-	// TODO: Get allow headers list from apollod.conf
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
-	w.WriteHeader(http.StatusOK)
-	return
 }

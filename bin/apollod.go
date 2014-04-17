@@ -6,7 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-martini/martini"
+	"github.com/martini-contrib/cors"
 	"github.com/tsuru/config"
 
 	"github.com/wiliamsouza/apollo/api"
@@ -40,46 +41,56 @@ func main() {
 
 	go ws.Bridge.Run()
 
-	r := mux.NewRouter()
-	r.Handle("/tests/packages",
-		api.AuthNHandleFunc(api.ListPackages)).Methods("GET")
-	r.Handle("/tests/packages",
-		api.AuthNHandleFunc(api.UploadPackage)).Methods("POST")
-	r.Handle("/tests/packages/{filename}",
-		api.AuthNHandleFunc(api.DetailPackage)).Methods("GET")
-	r.Handle("/tests/packages/downloads/{filename}",
-		api.AuthNHandleFunc(api.DownloadPackage)).Methods("GET")
-	r.Handle("/users", api.CORSHandle(api.PreFlightHandleFunc(api.NewUser))).Methods("POST", "OPTIONS")
-	r.Handle("/users/{email}", api.AuthNHandleFunc(api.DetailUser)).Methods("GET")
-	r.Handle("/users/authenticate", api.CORSHandle(api.PreFlightHandleFunc(api.Authenticate))).Methods("POST", "OPTIONS")
-	r.Handle("/organizations",
-		api.AuthNHandleFunc(api.NewOrganization)).Methods("POST")
-	r.Handle("/organizations",
-		api.AuthNHandleFunc(api.ListOrganizations)).Methods("GET")
-	r.Handle("/organizations/{name}",
-		api.AuthNHandleFunc(api.DetailOrganization)).Methods("GET")
-	r.Handle("/organizations/{name}",
-		api.AuthNHandleFunc(api.ModifyOrganization)).Methods("PUT")
-	r.Handle("/organizations/{name}",
-		api.AuthNHandleFunc(api.DeleteOrganization)).Methods("DELETE")
-	r.Handle("/devices", api.AuthNHandleFunc(api.NewDevice)).Methods("POST")
-	r.Handle("/devices", api.AuthNHandleFunc(api.ListDevices)).Methods("GET")
-	r.Handle("/devices/{codename}",
-		api.AuthNHandleFunc(api.DetailDevice)).Methods("GET")
-	r.Handle("/devices/{codename}",
-		api.AuthNHandleFunc(api.ModifyDevice)).Methods("PUT")
-	r.Handle("/devices/{codename}",
-		api.AuthNHandleFunc(api.DeleteDevice)).Methods("DELETE")
-	r.Handle("/tests", api.AuthNHandleFunc(api.NewCicle)).Methods("POST")
-	r.Handle("/tests", api.AuthNHandleFunc(api.ListCicles)).Methods("GET")
-	r.Handle("/tests/{id}", api.AuthNHandleFunc(api.DetailCicle)).Methods("GET")
-	r.Handle("/tests/{id}", api.AuthNHandleFunc(api.ModifyCicle)).Methods("PUT")
-	r.Handle("/tests/{id}",
-		api.AuthNHandleFunc(api.DeleteCicle)).Methods("DELETE")
-	r.HandleFunc("/ws/web/{apikey}", ws.Web)
-	r.HandleFunc("/ws/agent/{apikey}", ws.Agent)
-
-	http.Handle("/", r)
+	m := martini.Classic()
+	m.Use(cors.Allow(&cors.Options{
+		// TODO: Get allow origin list from apollod.conf
+		AllowOrigins: []string{"*"},
+	}))
+	m.Options("**", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	/**
+	m.Handle("/tests/packages",
+		api.AuthN(api.ListPackages)).Methods("GET")
+	m.Handle("/tests/packages",
+		api.AuthN(api.UploadPackage)).Methods("POST")
+	m.Handle("/tests/packages/{filename}",
+		api.AuthN(api.DetailPackage)).Methods("GET")
+	m.Handle("/tests/packages/downloads/{filename}",
+		api.AuthN(api.DownloadPackage)).Methods("GET")
+	**/
+	m.Post("/users", api.NewUser)
+	m.Get("/users/:email", api.AuthN(), api.DetailUser)
+	m.Post("/users/authenticate", api.Authenticate)
+	/**
+	m.Handle("/organizations",
+		api.AuthN(api.NewOrganization)).Methods("POST")
+	m.Handle("/organizations",
+		api.AuthN(api.ListOrganizations)).Methods("GET")
+	m.Handle("/organizations/{name}",
+		api.AuthN(api.DetailOrganization)).Methods("GET")
+	m.Handle("/organizations/{name}",
+		api.AuthN(api.ModifyOrganization)).Methods("PUT")
+	m.Handle("/organizations/{name}",
+		api.AuthN(api.DeleteOrganization)).Methods("DELETE")
+	m.Handle("/devices", api.AuthN(api.NewDevice)).Methods("POST")
+	m.Handle("/devices", api.AuthN(api.ListDevices)).Methods("GET")
+	m.Handle("/devices/{codename}",
+		api.AuthN(api.DetailDevice)).Methods("GET")
+	m.Handle("/devices/{codename}",
+		api.AuthN(api.ModifyDevice)).Methods("PUT")
+	m.Handle("/devices/{codename}",
+		api.AuthN(api.DeleteDevice)).Methods("DELETE")
+	m.Handle("/tests", api.AuthN(api.NewCicle)).Methods("POST")
+	m.Handle("/tests", api.AuthN(api.ListCicles)).Methods("GET")
+	m.Handle("/tests/{id}", api.AuthN(api.DetailCicle)).Methods("GET")
+	m.Handle("/tests/{id}", api.AuthN(api.ModifyCicle)).Methods("PUT")
+	m.Handle("/tests/{id}",
+		api.AuthN(api.DeleteCicle)).Methods("DELETE")
+	**/
+	m.Any("/ws/web/:apikey", ws.Web)
+	m.Any("/ws/agent/:apikey", ws.Agent)
+	http.Handle("/", m)
 
 	bind, err := config.GetString("daemon:bind")
 	if err != nil {
