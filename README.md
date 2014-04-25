@@ -15,6 +15,19 @@ Get the source code:
 git clone https://github.com/wiliamsouza/apollo.git
 ```
 
+After that install godeps:
+
+```
+go get github.com/tools/godep
+```
+
+Install dependencies:
+
+```
+cd apollo/Godeps
+godeps restore
+```
+
 Go to `bin` source directory and build the source:
 
 ```
