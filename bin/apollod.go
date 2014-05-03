@@ -16,7 +16,7 @@ import (
 	"github.com/wiliamsouza/apollo/ws"
 )
 
-const version = "0.0.1"
+const version = "0.1.0"
 
 func main() {
 	configFile := flag.String("config", "/etc/apollo/apollod.conf",
@@ -50,14 +50,10 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 	/**
-	m.Handle("/tests/packages",
-		api.AuthN(api.ListPackages)).Methods("GET")
-	m.Handle("/tests/packages",
-		api.AuthN(api.UploadPackage)).Methods("POST")
-	m.Handle("/tests/packages/{filename}",
-		api.AuthN(api.DetailPackage)).Methods("GET")
-	m.Handle("/tests/packages/downloads/{filename}",
-		api.AuthN(api.DownloadPackage)).Methods("GET")
+	m.Get("/tests/packages", api.AuthN(), api.ListPackages)
+	m.Post("/tests/packages", api.AuthN(), api.UploadPackage)
+	m.Get("/tests/packages/:filename", api.AuthN(), api.DetailPackage)
+	m.Get("/tests/packages/downloads/:filename", api.AuthN(), api.DownloadPackage)
 	**/
 	m.Post("/users", api.NewUser)
 	m.Get("/users/:email", api.AuthN(), api.DetailUser)

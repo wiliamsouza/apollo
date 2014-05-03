@@ -10,6 +10,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/go-martini/martini"
 	"github.com/tsuru/config"
 	"launchpad.net/gocheck"
 
@@ -66,8 +67,9 @@ func (s *S) TestListPackages(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	response := httptest.NewRecorder()
 	ListPackages(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
@@ -103,9 +105,10 @@ func (s *S) TestUploadPackage(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Add("Content-Type", writer.FormDataContentType())
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	response := httptest.NewRecorder()
 	UploadPackage(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
@@ -119,10 +122,11 @@ func (s *S) TestDetailPackage(c *gocheck.C) {
 	request, err := http.NewRequest("GET",
 		"test/package/package1.tgz", nil)
 	c.Assert(err, gocheck.IsNil)
-	t, err := token.New("jhon@doe.com")
+	email := "jhon@doe.com"
+	t, err := token.New(email)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	filename := "package1.tgz"
 	metadata := "metadata1.json"
@@ -135,23 +139,27 @@ func (s *S) TestDetailPackage(c *gocheck.C) {
 	defer pkgFile.Close()
 	defer metaFile.Close()
 	defer db.Session.Package().Remove(filename)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["filename"] = filename
+	params := martini.Params(p)
 	response := httptest.NewRecorder()
-	DetailPackage(response, request, tk)
+	DetailPackage(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json")
 	c.Assert(response.Body.String(), gocheck.Equals, results)
-
 }
 
 func (s *S) TestDownloadPackage(c *gocheck.C) {
 	request, err := http.NewRequest("GET",
 		"tests/packages/downloads/package1.tgz", nil)
 	c.Assert(err, gocheck.IsNil)
-	t, err := token.New("jhon@doe.com")
+	email := "jhon@doe.com"
+	t, err := token.New(email)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	filename := "package1.tgz"
 	metadata := "metadata1.json"
@@ -164,8 +172,12 @@ func (s *S) TestDownloadPackage(c *gocheck.C) {
 	defer pkgFile.Close()
 	defer metaFile.Close()
 	defer db.Session.Package().Remove(filename)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["filename"] = filename
+	params := martini.Params(p)
 	response := httptest.NewRecorder()
-	DownloadPackage(response, request, tk)
+	DownloadPackage(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	md5 := response.HeaderMap["Etag"][0]

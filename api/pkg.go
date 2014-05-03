@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"path/filepath"
 	"strconv"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/go-martini/martini"
 
 	"github.com/wiliamsouza/apollo/pkg"
+	"github.com/wiliamsouza/apollo/token"
 )
 
 // ListPackages list packages
-func ListPackages(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ListPackages(w http.ResponseWriter, r *http.Request, token *token.Token) {
 	w.Header().Set("Content-Type", "application/json")
 	packages, err := pkg.ListPackages()
 	if err != nil {
@@ -30,7 +30,7 @@ func ListPackages(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // UploadPackage upload package
-func UploadPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func UploadPackage(w http.ResponseWriter, r *http.Request, token *token.Token) {
 	w.Header().Set("Content-Type", "application/json")
 	pkgFile, pkgHeader, err := r.FormFile("package")
 	if err != nil {
@@ -57,9 +57,9 @@ func UploadPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // DetailPackage detail package
-func DetailPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func DetailPackage(w http.ResponseWriter, r *http.Request, token *token.Token, p martini.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	filename := filepath.Base(r.URL.Path)
+	filename := p["filename"]
 	pkg, err := pkg.DetailPackage(filename)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
@@ -75,8 +75,8 @@ func DetailPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // DownloadPackage download package
-func DownloadPackage(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
-	filename := filepath.Base(r.URL.Path)
+func DownloadPackage(w http.ResponseWriter, r *http.Request, token *token.Token, p martini.Params) {
+	filename := p["filename"]
 	pkg, err := pkg.GetPackage(filename)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
