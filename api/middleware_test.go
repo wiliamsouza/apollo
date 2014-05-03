@@ -17,13 +17,14 @@ func (s *S) TestAuthN(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tt, err := token.Validate(request)
+	_, err = token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
-	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	context := martini.New().createContext(response, request)
-	AuthN()(response, request, context)
+	m := martini.Classic()
+	m.Post("/protected", AuthN(), func() int {
+		return http.StatusOK
+	})
+	m.ServeHTTP(response, request)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
-	c.Assert(response.Body.String(), gocheck.Equals, "success")
 }
