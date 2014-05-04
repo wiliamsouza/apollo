@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/go-martini/martini"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/db"
@@ -23,10 +24,11 @@ func (s *S) TestNewDevice(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	NewDevice(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -43,10 +45,11 @@ func (s *S) TestNewDeviceInvalidJson(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	NewDevice(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusBadRequest)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -121,9 +124,10 @@ func (s *S) TestListDevices(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	ListDevices(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -170,10 +174,14 @@ func (s *S) TestDetailDevice(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DetailDevice(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["codename"] = codename
+	params := martini.Params(p)
+	DetailDevice(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
@@ -223,11 +231,15 @@ func (s *S) TestModifyDevice(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyDevice(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["codename"] = codename
+	params := martini.Params(p)
+	ModifyDevice(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb device.Device
 	err = db.Session.Device().FindId(codename).One(&orgDb)
@@ -272,10 +284,14 @@ func (s *S) TestDeleteDevice(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteDevice(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["codename"] = codename
+	params := martini.Params(p)
+	DeleteDevice(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	lenght, err := db.Session.Device().FindId(codename).Count()
 	c.Assert(err, gocheck.IsNil)
@@ -321,10 +337,14 @@ func (s *S) TestDeleteDeviceNoExist(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteDevice(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["codename"] = "noexist"
+	params := martini.Params(p)
+	DeleteDevice(response, request, tk, params)
 	lenght, err := db.Session.Device().FindId(codename).Count()
 	c.Assert(err, gocheck.IsNil)
 	c.Assert(lenght, gocheck.Equals, 1)

@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"path/filepath"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/go-martini/martini"
 
 	"github.com/wiliamsouza/apollo/device"
+	"github.com/wiliamsouza/apollo/token"
 )
 
 // NewDevice create new device
-func NewDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func NewDevice(w http.ResponseWriter, r *http.Request, token *token.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -44,7 +44,7 @@ func NewDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // ListDevices list devices
-func ListDevices(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ListDevices(w http.ResponseWriter, r *http.Request, token *token.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	devices, err := device.ListDevices()
 	if err != nil {
@@ -63,9 +63,11 @@ func ListDevices(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // DetailDevice detail device
-func DetailDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func DetailDevice(w http.ResponseWriter, r *http.Request, token *token.Token,
+	p martini.Params) {
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	id := filepath.Base(r.URL.Path)
+	id := p["codename"]
 	device, err := device.DetailDevice(id)
 	if err != nil {
 		msg := "Error getting device detail: "
@@ -83,7 +85,9 @@ func DetailDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // ModifyDevice modify device
-func ModifyDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ModifyDevice(w http.ResponseWriter, r *http.Request, token *token.Token,
+	p martini.Params) {
+
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "Error parssing request body, "
@@ -97,7 +101,7 @@ func ModifyDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
-	id := filepath.Base(r.URL.Path)
+	id := p["codename"]
 	err = device.ModifyDevice(id, o)
 	if err != nil {
 		msg := "Error updating device, "
@@ -108,11 +112,14 @@ func ModifyDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // DeleteDevice delete device
-func DeleteDevice(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
-	id := filepath.Base(r.URL.Path)
+func DeleteDevice(w http.ResponseWriter, r *http.Request, token *token.Token,
+	p martini.Params) {
+
+	id := p["codename"]
 	err := device.RemoveDevice(id)
 	if err != nil {
-		http.Error(w, "Error deleting device, "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error deleting device, "+err.Error(),
+			http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

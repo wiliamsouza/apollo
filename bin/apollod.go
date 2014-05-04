@@ -61,15 +61,13 @@ func main() {
 	m.Get("/organizations/:name", api.AuthN(), api.DetailOrganization)
 	m.Put("/organizations/:name", api.AuthN(), api.ModifyOrganization)
 	m.Delete("/organizations/:name", api.AuthN(), api.DeleteOrganization)
+
+	m.Post("/devices", api.AuthN(), api.NewDevice)
+	m.Get("/devices", api.AuthN(), api.ListDevices)
+	m.Get("/devices/:codename", api.AuthN(), api.DetailDevice)
+	m.Put("/devices/:codename", api.AuthN(), api.ModifyDevice)
+	m.Delete("/devices/:codename", api.AuthN(), api.DeleteDevice)
 	/**
-	m.Handle("/devices", api.AuthN(api.NewDevice)).Methods("POST")
-	m.Handle("/devices", api.AuthN(api.ListDevices)).Methods("GET")
-	m.Handle("/devices/{codename}",
-		api.AuthN(api.DetailDevice)).Methods("GET")
-	m.Handle("/devices/{codename}",
-		api.AuthN(api.ModifyDevice)).Methods("PUT")
-	m.Handle("/devices/{codename}",
-		api.AuthN(api.DeleteDevice)).Methods("DELETE")
 	m.Handle("/tests", api.AuthN(api.NewCicle)).Methods("POST")
 	m.Handle("/tests", api.AuthN(api.ListCicles)).Methods("GET")
 	m.Handle("/tests/{id}", api.AuthN(api.DetailCicle)).Methods("GET")
