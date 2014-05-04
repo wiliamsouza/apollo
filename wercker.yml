@@ -1,0 +1,33 @@
+box: wercker/golang@1.1.2
+services:
+  - wercker/mongodb
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    # Sets the go workspace and places you package
+    # at the right place in the workspace tree
+    - setup-go-workspace
+
+    # Gets the dependencies
+    - script:
+        name: godep
+        code: |
+          cd $WERCKER_SOURCE_DIR/Godeps
+          go version
+          go get github.com/tools/godep
+          godep restore
+
+    # Build the project
+    - script:
+        name: go build
+        code: |
+          cd $WERCKER_SOURCE_DIR/bin
+          go build apollod.go
+
+    # Test the project
+    - script:
+        name: go test
+        code: |
+          cd $WERCKER_SOURCE_DIR
+          go test ./...
