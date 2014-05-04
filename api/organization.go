@@ -4,15 +4,17 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"path/filepath"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/go-martini/martini"
 
 	"github.com/wiliamsouza/apollo/customer"
+	"github.com/wiliamsouza/apollo/token"
 )
 
 // NewOrganization create new organization
-func NewOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func NewOrganization(w http.ResponseWriter, r *http.Request,
+	token *token.Token) {
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -44,7 +46,9 @@ func NewOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // ListOrganizations list organizations
-func ListOrganizations(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ListOrganizations(w http.ResponseWriter, r *http.Request,
+	token *token.Token) {
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	organizations, err := customer.ListOrganizations()
 	if err != nil {
@@ -63,9 +67,11 @@ func ListOrganizations(w http.ResponseWriter, r *http.Request, token *jwt.Token)
 }
 
 // DetailOrganization detail organization
-func DetailOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func DetailOrganization(w http.ResponseWriter, r *http.Request,
+	token *token.Token, p martini.Params) {
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	name := filepath.Base(r.URL.Path)
+	name := p["name"]
 	organization, err := customer.DetailOrganization(name)
 	if err != nil {
 		msg := "Error getting organization detail: "
@@ -83,7 +89,9 @@ func DetailOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token
 }
 
 // ModifyOrganization modify organization
-func ModifyOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ModifyOrganization(w http.ResponseWriter, r *http.Request,
+	token *token.Token, p martini.Params) {
+
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "Error parssing request body, "
@@ -97,7 +105,7 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
-	name := filepath.Base(r.URL.Path)
+	name := p["name"]
 	err = customer.ModifyOrganization(name, o)
 	if err != nil {
 		msg := "Error updating organization, "
@@ -108,11 +116,14 @@ func ModifyOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token
 }
 
 // DeleteOrganization delete organization
-func DeleteOrganization(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
-	name := filepath.Base(r.URL.Path)
+func DeleteOrganization(w http.ResponseWriter, r *http.Request,
+	token *token.Token, p martini.Params) {
+
+	name := p["name"]
 	err := customer.RemoveOrganization(name)
 	if err != nil {
-		http.Error(w, "Error deleting organization, "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error deleting organization, "+err.Error(),
+			http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

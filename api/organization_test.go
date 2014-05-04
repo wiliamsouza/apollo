@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/go-martini/martini"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/customer"
@@ -23,10 +24,11 @@ func (s *S) TestNewOrganization(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	NewOrganization(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -43,10 +45,11 @@ func (s *S) TestNewOrganizationInvalidJson(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	NewOrganization(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusBadRequest)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -74,9 +77,10 @@ func (s *S) TestListOrganizations(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	ListOrganizations(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -100,10 +104,14 @@ func (s *S) TestDetailOrganization(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DetailOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	DetailOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
@@ -130,11 +138,15 @@ func (s *S) TestModifyOrganization(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	ModifyOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -162,11 +174,15 @@ func (s *S) TestModifyOrganizationAddNewTeamAndAdmins(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	ModifyOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -195,11 +211,15 @@ func (s *S) TestModifyOrganizationRemoveAllTeam(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	ModifyOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -228,11 +248,15 @@ func (s *S) TestModifyOrganizationRemoveOneTeamOneTeamUser(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	ModifyOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -261,11 +285,15 @@ func (s *S) TestModifyOrganizationRemoveOneAdmin(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	ModifyOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb customer.Organization
 	err = db.Session.Organization().FindId(name).One(&orgDb)
@@ -295,11 +323,15 @@ func (s *S) TestModifyOrganizationRemoveAllAdminShouldReturnError(c *gocheck.C) 
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	ModifyOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusBadRequest)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "text/plain; charset=utf-8")
@@ -320,10 +352,14 @@ func (s *S) TestDeleteOrganization(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = name
+	params := martini.Params(p)
+	DeleteOrganization(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	lenght, err := db.Session.Organization().FindId(name).Count()
 	c.Assert(err, gocheck.IsNil)
@@ -346,10 +382,14 @@ func (s *S) TestDeleteOrganizationNoExist(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteOrganization(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["name"] = "noexist"
+	params := martini.Params(p)
+	DeleteOrganization(response, request, tk, params)
 	lenght, err := db.Session.Organization().FindId(name).Count()
 	c.Assert(err, gocheck.IsNil)
 	c.Assert(lenght, gocheck.Equals, 1)

@@ -49,26 +49,19 @@ func main() {
 	m.Options("**", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	/**
 	m.Get("/tests/packages", api.AuthN(), api.ListPackages)
 	m.Post("/tests/packages", api.AuthN(), api.UploadPackage)
 	m.Get("/tests/packages/:filename", api.AuthN(), api.DetailPackage)
 	m.Get("/tests/packages/downloads/:filename", api.AuthN(), api.DownloadPackage)
-	**/
 	m.Post("/users", api.NewUser)
 	m.Get("/users/:email", api.AuthN(), api.DetailUser)
 	m.Post("/users/authenticate", api.Authenticate)
+	m.Post("/organizations", api.AuthN(), api.NewOrganization)
+	m.Get("/organizations", api.AuthN(), api.ListOrganizations)
+	m.Get("/organizations/:name", api.AuthN(), api.DetailOrganization)
+	m.Put("/organizations/:name", api.AuthN(), api.ModifyOrganization)
+	m.Delete("/organizations/:name", api.AuthN(), api.DeleteOrganization)
 	/**
-	m.Handle("/organizations",
-		api.AuthN(api.NewOrganization)).Methods("POST")
-	m.Handle("/organizations",
-		api.AuthN(api.ListOrganizations)).Methods("GET")
-	m.Handle("/organizations/{name}",
-		api.AuthN(api.DetailOrganization)).Methods("GET")
-	m.Handle("/organizations/{name}",
-		api.AuthN(api.ModifyOrganization)).Methods("PUT")
-	m.Handle("/organizations/{name}",
-		api.AuthN(api.DeleteOrganization)).Methods("DELETE")
 	m.Handle("/devices", api.AuthN(api.NewDevice)).Methods("POST")
 	m.Handle("/devices", api.AuthN(api.ListDevices)).Methods("GET")
 	m.Handle("/devices/{codename}",
