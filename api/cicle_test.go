@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/go-martini/martini"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/db"
@@ -24,10 +25,11 @@ func (s *S) TestNewCicle(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	NewCicle(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusCreated)
 	var r test.Cicle
@@ -50,10 +52,11 @@ func (s *S) TestNewCicleInvalidJson(c *gocheck.C) {
 	t, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", t))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	NewCicle(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusBadRequest)
 	ct := response.HeaderMap["Content-Type"][0]
@@ -78,9 +81,10 @@ func (s *S) TestListCicles(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
 	ListCicles(response, request, tk)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	results := fmt.Sprintf(r, test1.Id.Hex(), test2.Id.Hex())
@@ -103,10 +107,14 @@ func (s *S) TestDetailCicle(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DetailCicle(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["id"] = testCicle.Id.Hex()
+	params := martini.Params(p)
+	DetailCicle(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	ct := response.HeaderMap["Content-Type"][0]
 	c.Assert(ct, gocheck.Equals, "application/json; charset=utf-8")
@@ -131,11 +139,15 @@ func (s *S) TestModifyCicle(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Content-Type", "application/json")
 	response := httptest.NewRecorder()
-	ModifyCicle(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["id"] = testCicle.Id.Hex()
+	params := martini.Params(p)
+	ModifyCicle(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	var orgDb test.Cicle
 	err = db.Session.Cicle().FindId(testCicle.Id).One(&orgDb)
@@ -154,10 +166,14 @@ func (s *S) TestDeleteCicle(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteCicle(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["id"] = testCicle.Id.Hex()
+	params := martini.Params(p)
+	DeleteCicle(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusOK)
 	lenght, err := db.Session.Cicle().FindId(testCicle.Id).Count()
 	c.Assert(err, gocheck.IsNil)
@@ -177,10 +193,14 @@ func (s *S) TestDeleteCicleNoExist(c *gocheck.C) {
 	tkn, err := token.New("jhon@doe.com")
 	c.Assert(err, gocheck.IsNil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", tkn))
-	tk, err := token.Validate(request)
+	tt, err := token.Validate(request)
 	c.Assert(err, gocheck.IsNil)
 	response := httptest.NewRecorder()
-	DeleteCicle(response, request, tk)
+	tk := &token.Token{Email: tt.Claims["email"].(string), Exp: tt.Claims["exp"].(float64)}
+	p := make(map[string]string)
+	p["id"] = "noexist"
+	params := martini.Params(p)
+	DeleteCicle(response, request, tk, params)
 	c.Assert(response.Code, gocheck.Equals, http.StatusBadRequest)
 	c.Assert(response.Body.String(), gocheck.Equals, result)
 }

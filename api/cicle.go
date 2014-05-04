@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"path/filepath"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/go-martini/martini"
 
 	"github.com/wiliamsouza/apollo/test"
+	"github.com/wiliamsouza/apollo/token"
 )
 
 // NewCicle create new cicle
-func NewCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func NewCicle(w http.ResponseWriter, r *http.Request, token *token.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -44,7 +44,7 @@ func NewCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // ListCicles list cicles
-func ListCicles(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ListCicles(w http.ResponseWriter, r *http.Request, token *token.Token) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	cicles, err := test.ListCicles()
 	if err != nil {
@@ -63,9 +63,11 @@ func ListCicles(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // DetailCicle detail cicle
-func DetailCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func DetailCicle(w http.ResponseWriter, r *http.Request, token *token.Token,
+	p martini.Params) {
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	id := filepath.Base(r.URL.Path)
+	id := p["id"]
 	cicle, err := test.DetailCicle(id)
 	if err != nil {
 		msg := "Error getting cicle detail: "
@@ -83,7 +85,9 @@ func DetailCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // ModifyCicle modify cicle
-func ModifyCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
+func ModifyCicle(w http.ResponseWriter, r *http.Request, token *token.Token,
+	p martini.Params) {
+
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "Error parssing request body, "
@@ -97,7 +101,7 @@ func ModifyCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 		http.Error(w, msg+err.Error(), http.StatusBadRequest)
 		return
 	}
-	id := filepath.Base(r.URL.Path)
+	id := p["id"]
 	err = test.ModifyCicle(id, o)
 	if err != nil {
 		msg := "Error updating cicle, "
@@ -108,11 +112,14 @@ func ModifyCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
 }
 
 // DeleteCicle delete cicle
-func DeleteCicle(w http.ResponseWriter, r *http.Request, token *jwt.Token) {
-	id := filepath.Base(r.URL.Path)
+func DeleteCicle(w http.ResponseWriter, r *http.Request, token *token.Token,
+	p martini.Params) {
+
+	id := p["id"]
 	err := test.RemoveCicle(id)
 	if err != nil {
-		http.Error(w, "Error deleting cicle, "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error deleting cicle, "+err.Error(),
+			http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
