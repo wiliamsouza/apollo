@@ -1,0 +1,8 @@
+mongodb:
+  image: wiliamsouza/docker-mongodb
+  ports:
+    - "27017:27017"
+  volumes:
+    - /home/wiliam/.containers/apollo/volumes/mongodb/log:/var/log/mongodb
+    - /home/wiliam/.containers/apollo/volumes/mongodb/lib:/var/lib/mongodb
+    - /home/wiliam/.containers/apollo/volumes/mongodb/etc:/etc/mongodb

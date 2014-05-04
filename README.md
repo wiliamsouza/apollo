@@ -52,6 +52,50 @@ rsa:
 
 Now you can test the API.
 
+MongoDB container
+-----------------
+
+Apollo uses MongoDB as database and for development we run it inside a Docker
+container to get it running follow the instructions bellow:
+
+```
+sudo apt-get install docker.io python-pip curl
+```
+
+`docker.io` is a ubuntu 14.04 package refer to Docker getting started for
+[instalations instructions]
+(https://www.docker.io/gettingstarted/#h_installation).
+
+To make the use of a container we use [fig](http://orchardup.github.io/fig/).
+
+```
+sudo pip install fig
+```
+
+Use the follow directory structure to keep MongoDB configuration, logs
+and data.
+
+```
+mkdir -p ~/.containers/apollo/volumes/mongodb/log
+mkdir -p ~/.containers/apollo/volumes/mongodb/lib
+mkdir -p ~/.containers/apollo/volumes/mongodb/etc
+curl https://raw.githubusercontent.com/wiliamsouza/docker-mongodb/master/volumes/etc/mongod.conf -o ~/.containers/apollo/volumes/mongodb/etc/mongod.conf
+```
+
+Start the container run:
+
+```
+fig up
+```
+
+The command should be executed inside root project directory.
+
+If you need to access you MongoDB shell install the client tools.
+
+```
+sudo apt-get install mongodb-clients
+```
+
 User API
 --------
 
