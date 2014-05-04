@@ -1,6 +1,8 @@
 Apollo
 ======
 
+[![wercker status](https://app.wercker.com/status/f3fc24f278c2ca43fce270d5534745cc/m/master "wercker status")](https://app.wercker.com/project/bykey/f3fc24f278c2ca43fce270d5534745cc)
+
 Easy way to write, build, run and collect test results.
 
 Install
