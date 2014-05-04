@@ -30,7 +30,11 @@ func (s *S) SetUpSuite(c *gocheck.C) {
 	c.Assert(err, gocheck.IsNil)
 	config.Set("rsa:public", "../data/keys/rsa.pub")
 	config.Set("rsa:private", "../data/keys/rsa")
-	config.Set("database:url", "127.0.0.1:27017")
+	if os.Getenv("MONGODB_URL") != "" {
+		config.Set("database:url", os.Getenv("MONGODB_URL"))
+	} else {
+		config.Set("database:url", "127.0.0.1:27017")
+	}
 	config.Set("database:name", "apollo_api_tests")
 	token.LoadKeys()
 	db.Connect()

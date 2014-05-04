@@ -1,6 +1,7 @@
 package test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/tsuru/config"
@@ -18,6 +19,11 @@ var _ = gocheck.Suite(&S{})
 func (s *S) SetUpSuite(c *gocheck.C) {
 	err := config.ReadConfigFile("../etc/apollod.conf")
 	c.Check(err, gocheck.IsNil)
+	if os.Getenv("MONGODB_URL") != "" {
+		config.Set("database:url", os.Getenv("MONGODB_URL"))
+	} else {
+		config.Set("database:url", "127.0.0.1:27017")
+	}
 	config.Set("database:name", "apollo_test_tests")
 	db.Connect()
 }
