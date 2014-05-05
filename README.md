@@ -68,7 +68,7 @@ sudo apt-get install docker.io python-pip curl
 [instalations instructions]
 (https://www.docker.io/gettingstarted/#h_installation).
 
-To make the use of a container we use [fig](http://orchardup.github.io/fig/).
+To make easy the use of a container we use [fig](http://orchardup.github.io/fig/).
 
 ```
 sudo pip install fig

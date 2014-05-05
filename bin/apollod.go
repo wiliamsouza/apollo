@@ -66,13 +66,11 @@ func main() {
 	m.Get("/devices/:codename", api.AuthN(), api.DetailDevice)
 	m.Put("/devices/:codename", api.AuthN(), api.ModifyDevice)
 	m.Delete("/devices/:codename", api.AuthN(), api.DeleteDevice)
-
 	m.Post("/tests", api.AuthN(), api.NewCicle)
 	m.Get("/tests", api.AuthN(), api.ListCicles)
 	m.Get("/tests/:id", api.AuthN(), api.DetailCicle)
 	m.Put("/tests/:id", api.AuthN(), api.ModifyCicle)
 	m.Delete("/tests/:id", api.AuthN(), api.DeleteCicle)
-
 	m.Any("/ws/web/:apikey", ws.Web)
 	m.Any("/ws/agent/:apikey", ws.Agent)
 	http.Handle("/", m)
