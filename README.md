@@ -351,5 +351,3 @@ Delete:
 ```
 curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request DELETE http://localhost:8000/tests/530d6474e169975bbb000001
 ```
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wiliamsouza/apollo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
