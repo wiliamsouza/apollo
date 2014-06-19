@@ -27,7 +27,7 @@ Install dependencies:
 
 ```
 cd apollo/Godeps
-godeps restore
+godep restore
 ```
 
 Go to `bin` source directory and build the source:
@@ -38,7 +38,7 @@ go build apollod.go
 ```
 
 Start the webserver:
- 
+
 The only configuration that need to be adjusted is keys path
 the following example set the path to a test keys.
 
@@ -61,7 +61,7 @@ Apollo uses MongoDB as database and for development we run it inside a Docker
 container to get it running follow the instructions bellow:
 
 ```
-sudo apt-get install docker.io python-pip curl
+sudo apt-get install docker.io python-pip curl mongodb-clients
 ```
 
 `docker.io` is a ubuntu 14.04 package refer to Docker getting started for
