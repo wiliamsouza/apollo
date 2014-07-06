@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+if [ ! -d /var/log/uwsgi ]; then
+    mkdir /var/log/uwsgi
+fi
+
+# Error read only file system docker 0.11.0
+#sysctl -p
+
+exec supervisord
