@@ -1,0 +1,20 @@
+[Unit]
+Description=apollo-api
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+EnvironmentFile=/etc/env.d/apollo
+TimeoutStartSec=0
+ExecStartPre=/usr/bin/docker pull ${DOCKER_REGISTRY}:5000/apollo/api:${ENVIRONMENT}
+ExecStart=/usr/bin/docker run --name api-%i --rm -p %i:8000 ${DOCKER_REGISTRY}:5000/apollo/api:${ENVIRONMENT}
+ExecStartPost=/usr/bin/etcdctl set /apollo/api/%i ${COREOS_PUBLIC_IPV4}:%i
+ExecStop=/usr/bin/docker stop api-%i
+ExecStopPost=/usr/bin/etcdctl rm /apollo/api/%i
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+X-Conflicts=api@%i.service
