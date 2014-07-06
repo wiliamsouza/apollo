@@ -5,17 +5,23 @@ Apollo
 
 Easy way to write, build, run and collect test results.
 
-Install
--------
+Golang
+------
 
 Install Go [tools](http://golang.org/doc/install#install) I prefer use
 [godeb](http://blog.labix.org/2013/06/15/in-flight-deb-packages-of-go) to do that.
+
+Code
+----
 
 Get the source code:
 
 ```
 git clone https://github.com/wiliamsouza/apollo.git
 ```
+
+Dependencies
+------------
 
 After that install godeps:
 
@@ -37,7 +43,61 @@ cd apollo/bin
 go build apollod.go
 ```
 
-Start the webserver:
+Running
+-------
+
+You can run a `CoreOS` cluster with will run a nginx, docker-registry and an
+instance of the API server.
+
+Docker image
+------------
+
+Build this image:
+
+```
+docker build -t apollo/api:development .
+```
+
+Container
+---------
+
+The commands here should be executed inside a cluster node.
+
+Shell access:
+
+```
+$ docker run --rm -p 8000:8000 -i \
+-t apollo/api:development /bin/bash
+```
+
+The command above will start a container give you a shell. Don't
+forget to start the service running the `startup &` script.
+
+Manual start:
+
+```
+$ docker run --name api -p 8000:8000 -d apollo/api:development
+```
+
+The command above will start a container and return its ID.
+
+Pushing images
+--------------
+
+Before push an image you need start a local registry `apollo-registry/README.md`
+for instruction how to start a registry.
+
+```
+REGISTRY=<LOCAL_IP>
+TAG=development
+docker tag apollo/api:$TAG $REGISTRY:5000/apollo/api:$TAG
+docker push $REGISTRY:5000/apollo/api:$TAG
+```
+
+Local server
+------------
+
+Start a local api server:
 
 The only configuration that need to be adjusted is keys path
 the following example set the path to a test keys.
