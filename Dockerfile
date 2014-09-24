@@ -32,10 +32,4 @@ RUN chmod +x /usr/local/bin/etcdctl
 # Add apollod binary
 ADD bin/apollod /usr/local/bin/apollod
 
-# Add apollod config
-ADD etc/apollod.conf /etc/apollo/apollod.conf
-
-# Add development keys
-ADD /data/keys /etc/apollo/keys
-
 EXPOSE 8000
