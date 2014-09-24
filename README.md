@@ -49,14 +49,56 @@ Running
 You can run a `CoreOS` cluster with will run a nginx, docker-registry and an
 instance of the API server.
 
+Environment
+-----------
+
+Set the environment you are working on.
+
+```
+export APOLLO_ENVIRONMENT=local
+```
+
+```
 Docker image
 ------------
 
 Build this image:
 
 ```
-docker build -t apollo/api:development .
+docker build -t apollo/api:$APOLLO_ENVIRONMENT .
 ```
+
+Pushing images
+--------------
+
+Push a image manually, this will preload the image to the cluster node:
+
+```
+IMAGE="apollo/api"
+COREOS_IP=172.16.16.101
+docker save $IMAGE | docker -H tcp://$COREOS_IP:2375 load
+docker -H tcp://$COREOS_IP:2375 tag $IMAGE apollo/api:$APOLLO_ENVIRONMENT
+```
+
+Before push an image you need start a local registry `apollo-registry/README.md`
+for instruction how to start a registry.
+
+```
+TAG=$APOLLO_ENVIRONMENT
+REGISTRY=$APOLLO_ENVIRONMENT.registry.apollolab.com.br:5000
+docker tag apollo/api:$TAG $REGISTRY/apollo/api:$TAG
+docker push $REGISTRY/apollo/api:$TAG
+```
+
+Start the service on the cluster:
+
+```
+cd systemd
+ln -s apollod.service api@8000.service
+fleetctl start api@8000.service
+```
+
+Info about how to configure fleet `apollo-coreos/README.md#fleet`.
 
 Container
 ---------
@@ -80,19 +122,6 @@ $ docker run --name api -p 8000:8000 -d apollo/api:development
 ```
 
 The command above will start a container and return its ID.
-
-Pushing images
---------------
-
-Before push an image you need start a local registry `apollo-registry/README.md`
-for instruction how to start a registry.
-
-```
-REGISTRY=<LOCAL_IP>
-TAG=development
-docker tag apollo/api:$TAG $REGISTRY:5000/apollo/api:$TAG
-docker push $REGISTRY:5000/apollo/api:$TAG
-```
 
 Local server
 ------------
