@@ -1,10 +1,12 @@
 #!/bin/bash -e
 
-if [ ! -d /var/log/uwsgi ]; then
-    mkdir /var/log/uwsgi
-fi
 
-# Error read only file system docker 0.11.0
-#sysctl -p
+etcd=${COREOS_IP}:4001
+
+until /usr/local/bin/confd -onetime -node $etcd -config-file /etc/confd/confd.toml 2>/dev/null; do
+    sleep 1
+done
+
+/usr/local/bin/confd -node $etcd -config-file /etc/confd/confd.toml &
 
 exec supervisord
