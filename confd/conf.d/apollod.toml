@@ -1,0 +1,8 @@
+[template]
+src   = "apollod.tmpl"
+dest  = "/etc/apollo/apollod.conf"
+owner = "root"
+group = "root"
+mode  = "0755"
+keys = ["/apollo/mongodb"]
+reload_cmd = "supervisorctl restart apollod"

@@ -1,0 +1,13 @@
+database:
+  url: {{ apollo_mongodb_url }}
+  name: {{ apollo_mongodb_name }}
+
+daemon:
+  bind: 0.0.0.0:8000
+
+uid: apollo
+origin: "web.apollolab.com.br"
+
+rsa:
+  private: "/etc/apollo/keys/rsa"
+  public: "/etc/apollo/keys/rsa.pub"
