@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-
 etcd=${COREOS_IP}:4001
 
 until /usr/local/bin/confd -onetime -node $etcd -config-file /etc/confd/confd.toml 2>/dev/null; do
