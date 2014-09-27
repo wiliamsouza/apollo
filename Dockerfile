@@ -12,6 +12,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
+RUN apt-get update
+
+RUN apt-get install -y python-software-properties
 
 # supervisor
 RUN apt-get install supervisor -y
@@ -25,9 +28,19 @@ RUN chmod +x /usr/local/bin/startup
 
 CMD ["/usr/local/bin/startup"]
 
-# install etcdctl binary
-ADD bin/etcdctl /usr/local/bin/etcdctl
-RUN chmod +x /usr/local/bin/etcdctl
+# environment
+
+# dependencies
+RUN apt-get install curl -y
+
+# repos
+
+# confd binary
+RUN curl -L https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64 -o /usr/local/bin/confd
+RUN chmod +x /usr/local/bin/confd
+
+# confd configuration
+ADD confd /etc/confd
 
 # Add apollod binary
 ADD bin/apollod /usr/local/bin/apollod
