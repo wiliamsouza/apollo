@@ -7,8 +7,8 @@ import (
 	"mime/multipart"
 
 	"github.com/wiliamsouza/apollo/db"
-	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // Package represents GridFS file

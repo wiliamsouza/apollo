@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/tsuru/config"
-	"labix.org/v2/mgo"
+	"gopkg.in/mgo.v2"
 	"launchpad.net/gocheck"
 )
 

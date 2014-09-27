@@ -25,7 +25,7 @@ func New(email string) (string, error) {
 // Validate a token try parser from Authorization header
 // or access_token parameter
 func Validate(r *http.Request) (*jwt.Token, error) {
-	token, err := jwt.ParseFromRequest(r, func(t *jwt.Token) ([]byte, error) {
+	token, err := jwt.ParseFromRequest(r, func(t *jwt.Token) (interface{}, error) {
 		return PublicKey, nil
 	})
 	return token, err

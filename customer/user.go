@@ -8,7 +8,7 @@ import (
 
 	"code.google.com/p/go-uuid/uuid"
 	"code.google.com/p/go.crypto/bcrypt"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 
 	"github.com/wiliamsouza/apollo/db"
 )

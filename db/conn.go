@@ -7,7 +7,7 @@ package db
 
 import (
 	"github.com/tsuru/config"
-	"labix.org/v2/mgo"
+	"gopkg.in/mgo.v2"
 )
 
 type session struct {

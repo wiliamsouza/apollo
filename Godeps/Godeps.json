@@ -1,68 +1,69 @@
 {
 	"ImportPath": "github.com/wiliamsouza/apollo",
-	"GoVersion": "go1.2.1",
+	"GoVersion": "go1.3.2",
 	"Packages": [
 		"./..."
 	],
 	"Deps": [
 		{
 			"ImportPath": "code.google.com/p/go-uuid/uuid",
-			"Comment": "null-10",
-			"Rev": "5fac954758f5aa282478dc07fbb8709fe9575184"
+			"Comment": "null-12",
+			"Rev": "7dda39b2e7d5e265014674c5af696ba4186679e9"
 		},
 		{
 			"ImportPath": "code.google.com/p/go.crypto/bcrypt",
-			"Comment": "null-189",
-			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
+			"Comment": "null-223",
+			"Rev": "31393df5baea9ed8d6778396e7f3896070ea5c04"
 		},
 		{
 			"ImportPath": "code.google.com/p/go.crypto/blowfish",
-			"Comment": "null-189",
-			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
+			"Comment": "null-223",
+			"Rev": "31393df5baea9ed8d6778396e7f3896070ea5c04"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/inject",
-			"Rev": "8822b072a3636c1a365c68e1004efd5bf8ab500f"
+			"Comment": "v1.0-rc1-4-g4b81725",
+			"Rev": "4b8172520a03fa190f427bbd284db01b459bfce7"
 		},
 		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
-			"Rev": "f80fd39457122ccbaf05ac1881b7f3a0a7fbcbf3"
+			"Comment": "v2.0.0-3-gc0da491",
+			"Rev": "c0da49162251c81124e34f3e7885527a091dacd5"
 		},
 		{
 			"ImportPath": "github.com/go-martini/martini",
-			"Comment": "v0.1-157-gf8f9fcb",
-			"Rev": "f8f9fcb8a24a4bb44388fc55e27f22c4ae17a828"
+			"Comment": "v1.0-47-g9c8b84a",
+			"Rev": "9c8b84a170f5fe2352ae698a85cd5eb66b38a290"
 		},
 		{
 			"ImportPath": "github.com/gorilla/websocket",
-			"Rev": "92334662baa9cbebc2e6e68b8d56bc1233f85a4c"
+			"Rev": "a6f041ac33b84488bb44137d6866cd3c8706d792"
 		},
 		{
 			"ImportPath": "github.com/howeyc/fsnotify",
-			"Rev": "effe075d9a3789af4908657b3a8e7a2de3c3b040"
+			"Comment": "v0.9.0-11-g6b1ef89",
+			"Rev": "6b1ef893dc11e0447abda6da20a5203481878dda"
 		},
 		{
 			"ImportPath": "github.com/martini-contrib/cors",
-			"Rev": "e4ca31a01a07c2ae684fd7b44fa49bbb26f2a14a"
+			"Rev": "13d52749faf4fb6f21eb076f50f3b37ea488631c"
 		},
 		{
 			"ImportPath": "github.com/tsuru/config",
-			"Rev": "caf5fe2f55dfaf63564a929bda3d722181e6d770"
+			"Rev": "ec7b78d45eab5959f4e31a4a092431fa6948e9a6"
 		},
 		{
-			"ImportPath": "labix.org/v2/mgo",
-			"Comment": "253",
-			"Rev": "gustavo@niemeyer.net-20131210224142-gtc8ap0sa0roxesc"
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Rev": "c9fd3712fbf3e92924c974dce16da2d322508fe2"
+		},
+		{
+			"ImportPath": "gopkg.in/v1/yaml",
+			"Rev": "9f9df34309c04878acc86042b16630b0f696e1de"
 		},
 		{
 			"ImportPath": "launchpad.net/gocheck",
-			"Comment": "85",
-			"Rev": "gustavo@niemeyer.net-20130302024745-6ikofwq2c03h7giu"
-		},
-		{
-			"ImportPath": "launchpad.net/goyaml",
-			"Comment": "50",
-			"Rev": "gustavo@niemeyer.net-20131114120802-abe042syx64z2m7s"
+			"Comment": "87",
+			"Rev": "gustavo@niemeyer.net-20140225173054-xu9zlkf9kxhvow02"
 		}
 	]
 }

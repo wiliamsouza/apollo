@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-martini/martini"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 	"launchpad.net/gocheck"
 
 	"github.com/wiliamsouza/apollo/customer"
