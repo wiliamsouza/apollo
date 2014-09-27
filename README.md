@@ -52,20 +52,23 @@ instance of the API server.
 Environment
 -----------
 
-Set the environment you are working on.
+Before run see [apollo-coreos](https://github.com/wiliamsouza/apollo-coreos#environment) for instructions.
+
+Volumes
+-------
 
 ```
-export APOLLO_ENVIRONMENT=local
+mkdir -p ~/.containers/apollo/apollod
+cp -R volumes/ ~/.containers/apollo/apollod/
 ```
 
-```
 Docker image
 ------------
 
 Build this image:
 
 ```
-docker build -t apollo/api:$APOLLO_ENVIRONMENT .
+docker build -t $DOCKER_REGISTRY/apollo/api:$APOLLO_TAG .
 ```
 
 Pushing images
@@ -74,28 +77,29 @@ Pushing images
 Push a image manually, this will preload the image to the cluster node:
 
 ```
-IMAGE="apollo/api"
+IMAGE="${DOCKER_REGISTRY}/apollo/api"
 COREOS_IP=172.16.16.101
 docker save $IMAGE | docker -H tcp://$COREOS_IP:2375 load
-docker -H tcp://$COREOS_IP:2375 tag $IMAGE apollo/api:$APOLLO_ENVIRONMENT
+```
+
+Push the image to local registry:
+
+```
+docker push $IMAGE:$APOLLO_TAG
 ```
 
 Before push an image you need start a local registry `apollo-registry/README.md`
 for instruction how to start a registry.
 
-```
-TAG=$APOLLO_ENVIRONMENT
-REGISTRY=$APOLLO_ENVIRONMENT.registry.apollolab.com.br:5000
-docker tag apollo/api:$TAG $REGISTRY/apollo/api:$TAG
-docker push $REGISTRY/apollo/api:$TAG
-```
+Starting service
+----------------
 
-Start the service on the cluster:
+Start `api` service on the cluster:
 
 ```
 cd systemd
-ln -s apollod.service api@8000.service
-fleetctl start api@8000.service
+ln -s apollod.service api@1.service
+fleetctl start api@1.service
 ```
 
 Info about how to configure fleet `apollo-coreos/README.md#fleet`.
@@ -105,11 +109,17 @@ Container
 
 The commands here should be executed inside a cluster node.
 
+```
+eval `cat /etc/environment`
+eval `cat /etc/env.d/apollo`
+```
+
 Shell access:
 
 ```
-$ docker run --rm -p 8000:8000 -i \
--t apollo/api:development /bin/bash
+docker run --rm -p 8000:8000 -i \
+-v /srv/containers/apollod/volumes/etc:/etc/apollo/ \
+-t $DOCKER_REGISTRY/apollo/api:$APOLLO_ENVIRONMENT /bin/bash
 ```
 
 The command above will start a container give you a shell. Don't
@@ -118,7 +128,9 @@ forget to start the service running the `startup &` script.
 Manual start:
 
 ```
-$ docker run --name api -p 8000:8000 -d apollo/api:development
+docker run --name api -p 8000:8000 -d \
+-v /srv/containers/apollod/volumes/etc:/etc/apollo/ \
+-t $DOCKER_REGISTRY/apollo/api:$APOLLO_ENVIRONMENT
 ```
 
 The command above will start a container and return its ID.

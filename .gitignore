@@ -18,3 +18,4 @@ agent/agent.iml
 agent/agent.ipr
 agent/agent.iws
 agent/build/
+systemd/api@*.service
