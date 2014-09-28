@@ -54,6 +54,11 @@ Environment
 
 Before run see [apollo-coreos](https://github.com/wiliamsouza/apollo-coreos#environment) for instructions.
 
+```
+IMAGE="${DOCKER_REGISTRY}/apollo/api"
+COREOS_IP=172.16.16.101
+```
+
 Volumes
 -------
 
@@ -77,8 +82,6 @@ Pushing images
 Push a image manually, this will preload the image to the cluster node:
 
 ```
-IMAGE="${DOCKER_REGISTRY}/apollo/api"
-COREOS_IP=172.16.16.101
 docker save $IMAGE | docker -H tcp://$COREOS_IP:2375 load
 ```
 
@@ -98,8 +101,8 @@ Start `api` service on the cluster:
 
 ```
 cd systemd
-ln -s apollod.service api@1.service
-fleetctl start api@1.service
+ln -s apollod.service api@8000.service
+fleetctl start api@8000.service
 ```
 
 Info about how to configure fleet `apollo-coreos/README.md#fleet`.
@@ -118,6 +121,7 @@ Shell access:
 
 ```
 docker run --rm -p 8000:8000 -i \
+-e COREOS_IP=${COREOS_PUBLIC_IPV4} \
 -v /srv/containers/apollod/volumes/etc:/etc/apollo/ \
 -t $DOCKER_REGISTRY/apollo/api:$APOLLO_ENVIRONMENT /bin/bash
 ```
@@ -129,6 +133,7 @@ Manual start:
 
 ```
 docker run --name api -p 8000:8000 -d \
+-e COREOS_IP=${COREOS_PUBLIC_IPV4} \
 -v /srv/containers/apollod/volumes/etc:/etc/apollo/ \
 -t $DOCKER_REGISTRY/apollo/api:$APOLLO_ENVIRONMENT
 ```
