@@ -18,4 +18,4 @@ ExecStopPost=/usr/bin/etcdctl rm /apollo/api/%i
 WantedBy=multi-user.target
 
 [X-Fleet]
-X-Conflicts=api@%i.service
+Conflicts=api@%i.service
