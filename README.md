@@ -210,19 +210,19 @@ User API
 Adding a new `user`:
 
 ```
-curl -v --header "Content-Type: application/json" --request POST --data '{"name":"Jhon Doe","email":"jhon@doe.com","password":"12345"}' http://localhost:8000/users
+curl -v --header "Content-Type: application/json" --request POST --data '{"name":"John Doe","email":"john@doe.com","password":"12345"}' http://localhost:8000/users
 ```
 
 It will return `user` name and email:
 
 ```
-{"name":"Jhon Doe","email":"jhon@doe.com"}
+{"name":"John Doe","email":"john@doe.com"}
 ```
 
 Authenticate `user`:
 
 ```
-curl -v --header "Content-Type: application/json" --request POST --data '{"email":"jhon@doe.com","password":"12345"}' http://localhost:8000/users/authenticate
+curl -v --header "Content-Type: application/json" --request POST --data '{"email":"john@doe.com","password":"12345"}' http://localhost:8000/users/authenticate
 ```
 It will return a JWT(JSON Web Token) `token`:
 
@@ -242,12 +242,12 @@ export TOKEN=<token>
 Detail `user`:
 
 ```
-curl -v --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request GET http://localhost:8000/users/jhon@doe.com
+curl -v --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request GET http://localhost:8000/users/john@doe.com
 ```
 It will return `user` details:
 
 ```
-{"name":"Jhon Doe","email":"jhon@doe.com","apikey":"0Yy00ZDRhLThmNmQt...","created":"2014-02-22T00:20:44.511-03:00","lastlogin":"0001-01-01T00:00:00Z"}
+{"name":"John Doe","email":"john@doe.com","apikey":"0Yy00ZDRhLThmNmQt...","created":"2014-02-22T00:20:44.511-03:00","lastlogin":"0001-01-01T00:00:00Z"}
 ```
 
 Package API
@@ -305,13 +305,13 @@ Organization API
 Adding a new `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}' http://localhost:8000/organizations
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request POST --data '{"name":"doecorp","teams":[{"name":"Test","users":["john@doe.com","jane@doe.com"]}],"admins":["john@doe.com"]}' http://localhost:8000/organizations
 ```
 
 It will return:
 
 ```
-{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}
+{"name":"doecorp","teams":[{"name":"Test","users":["john@doe.com","jane@doe.com"]}],"admins":["john@doe.com"]}
 ```
 
 List `organizations`:
@@ -323,7 +323,7 @@ curl -vv --header "Content-Type: application/json" --header "Authorization: Bear
 It will return:
 
 ```
-[{"name":"janecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jane@doe.com"]},{"name":"jhoncorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}]
+[{"name":"janecorp","teams":[{"name":"Test","users":["john@doe.com","jane@doe.com"]}],"admins":["jane@doe.com"]},{"name":"johncorp","teams":[{"name":"Test","users":["john@doe.com","jane@doe.com"]}],"admins":["john@doe.com"]}]
 ```
 
 Detail `organization`:
@@ -335,13 +335,13 @@ curl -vv --header "Content-Type: application/json" --header "Authorization: Bear
 It will return:
 
 ```
-{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com","jane@doe.com"]}],"admins":["jhon@doe.com"]}
+{"name":"doecorp","teams":[{"name":"Test","users":["john@doe.com","jane@doe.com"]}],"admins":["john@doe.com"]}
 ```
 
 Update `organization`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["jhon@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request PUT --data '{"name":"doecorp","teams":[{"name":"Test","users":["john@doe.com"]}],"admins":["jane@doe.com"]}' http://localhost:8000/organizations/doecorp
 ```
 
 Update is used to simulate deletion, change and addtion.
@@ -394,7 +394,7 @@ It will return:
 Update `device`:
 
 ```
-curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request PUT --data '{"codename":"a700","permission":{"organization":{"run":true,"result":true,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"jhon@doe.com","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}' http://localhost:8000/devices/a700
+curl -vv --header "Content-Type: application/json" --header "Authorization: Bearer $TOKEN" --request PUT --data '{"codename":"a700","permission":{"organization":{"run":true,"result":true,"info":false},"team":{"run":false,"result":false,"info":false}},"owner":"john@doe.com","status":"","name":"Acer A700","vendor":"acer","manufacturer":"acer","type":"tablet","platform":"NVIDIA Tegra 3","cpu":"1.3 GHz quad-core Cortex A9","gpu":"416 MHz twelve-core Nvidia GeForce ULP","ram":"1GB","weight":"665 g (1.47 lb)","dimensions":"259x175x11 mm (10.20x6.89x0.43 in)","screenDimension":"257 mm (10.1 in)","resolution":"1920x1200","screenDensity":"224 PPI","internalStorage":"32GB","sdCard":"up to 32 GB","bluetooth":"yes","wifi":"802.11 b/g/n","mainCamera":"5MP","secondaryCamera":"2MP","power":"9800 mAh","peripherals":"accelerometer, gyroscope, proximity sensor, digital compass, GPS, magnometer, microphone"}' http://localhost:8000/devices/a700
 ```
 
 Update is used to simulate deletion, change and addtion.
